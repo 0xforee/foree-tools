@@ -30,7 +30,7 @@ function first_login
     fi
 }
 
-function login
+function ssh_bringup
 {
     if [ ! -z "$1" ];then
         search_result=$( grep -i "$1" $PROJECT_CONF |awk -F : '{print $1}')
@@ -69,5 +69,3 @@ function login
     ssh-copy-id -i ~/.ssh/id_rsa.pub bringup@$LOGIN_IP 2>&1 > /dev/null
     ssh bringup@$LOGIN_IP
 }
-#first_login
-login $1
