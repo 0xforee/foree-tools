@@ -2,14 +2,15 @@
 ### Description: 这个脚本放置一些adb 的一些快捷命令
 ### Author: foree
 ### Date: 20151028
+ADB_PATH=`which adb`
 
 function fadb
 {
     case "$1" in
         kill)
-            adb shell kill -9 `adb shell ps |grep $2 |awk '{print $2}'`
+            $ADB_PATH shell kill -9 `adb shell ps |grep $2 |awk '{print $2}'`
             ;;
         *)
-            adb $@
+            $ADB_PATH $@
     esac
 }
