@@ -1,13 +1,12 @@
-#!/bin/bash -x
+#!/bin/bash 
 
 ### Description: 查找给定地址的服务器的projects
 ### Author: foree
 ### Date: 20151025
 
 #定义变量
-SERVERS_PATH=(~/server/bringup36/ ~/server/bringup38/)
 PROJECT_LIST=""
-PROJECT_CONF=~/.config/foree-tools/foree-tools.conf
+source ~/.config/foree-tools/foree-tools.conf
 
 #判断给定的目录是否是project根目录
 function is_project_dir
@@ -21,7 +20,7 @@ function is_project_dir
         else
             echo "project dir is $project_dir"
         fi
-        PROJECT_LIST=$PROJECT_LIST" "$project_dir
+        PROJECT_LIST="$PROJECT_LIST\n$base_dir/$project_dir"
     else
         return 2
     fi
@@ -30,10 +29,10 @@ function is_project_dir
 #遍历服务器下的目录
 function find_project_dir
 {
-    for i in ${!SERVERS_PATH[@]}
+    for i in ${!BRINGUP_SERVER_SAMBA_PATH[@]}
     do
         PROJECT_LIST=""
-        cd ${SERVERS_PATH[$i]}
+        cd ${BRINGUP_SERVER_SAMBA_PATH[$i]}
         level1_dir_list=$( find . -maxdepth 1 -type d |cut -d / -f 2 |grep -v '^\.' )
         for dir in $level1_dir_list
         do
@@ -57,7 +56,7 @@ function find_project_dir
                 cd ..
             fi
         done
-        echo "SERVER_$(($i+1)):$PROJECT_LIST" >>$PROJECT_CONF
+        echo -e "$PROJECT_LIST" >$TOOLS_CONFIG_DIR/SERVER_$i
     done
 
 }
