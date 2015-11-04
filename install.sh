@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 ### Description: 自己的工具集合的安装脚本
 ### Author: foree
 ### Date: 20151025
@@ -12,9 +12,10 @@ if [ ! -d $TOOLS_CONFIG_DIR ];then
     mkdir -p $TOOLS_CONFIG_DIR
 fi
 
-#创建配置文件
-if [ ! -f $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME ];then
+#初始化或者更新配置文件
+if [ ! -f $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME -o ./foree-tools.conf.default -nt $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME ];then
     cp ./foree-tools.conf.default $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME
+    echo "init/update success"
 fi
 
 #遍历配置脚本中的数组来初始化

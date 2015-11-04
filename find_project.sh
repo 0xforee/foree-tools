@@ -5,8 +5,8 @@
 ### Date: 20151025
 
 #定义变量
-PROJECT_LIST=""
-source ~/.config/foree-tools/foree-tools.conf
+ROJECT_LIST=""
+source /home/fbash/.config/foree-tools/foree-tools.conf
 
 #判断给定的目录是否是project根目录
 function is_project_dir
@@ -29,6 +29,8 @@ function is_project_dir
 #遍历服务器下的目录
 function find_project_dir
 {
+    CURRENT_DIR=$PWD
+
     for i in ${!BRINGUP_SERVER_SAMBA_PATH[@]}
     do
         PROJECT_LIST=""
@@ -58,7 +60,7 @@ function find_project_dir
         done
         echo -e "$PROJECT_LIST" >$TOOLS_CONFIG_DIR/SERVER_$i
     done
+    cd $CURRENT_DIR
 
 }
-
 find_project_dir
