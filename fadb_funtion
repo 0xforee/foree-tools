@@ -2,7 +2,7 @@
 ### Description: 这个脚本放置一些adb 的一些快捷命令
 ### Author: foree
 ### Date: 20151028
-ADB_PATH=`which adb`
+ADB_PATH=/usr/bin/adb
 
 function fadb
 {
