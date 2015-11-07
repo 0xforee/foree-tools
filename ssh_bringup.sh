@@ -8,7 +8,9 @@ source $PROJECT_CONF
 
 function add_color_for_echo
 {
-    echo -e "\033[33m $1 \033[0m"
+    echo -e "\033[33m 
+    $1
+    \033[0m"
 }
 
 
@@ -42,27 +44,36 @@ function do_choice
             server_info
             echo "未指定项目或指定的项目不存在!!!"
             count=${#BRINGUP_IPS[@]}
+            echo "which server you want to login ?"
+            echo -n "<1...$count>?"
+            read SELECTION
+            #如果选择不为0,且小于等于IP数量,并且选择是个数字,那么就去选择IP
+            if [ $SELECTION -ne '0' -a $SELECTION -le $count ] && [[ $SELECTION =~ [0-9]* ]];then
+                LOGIN_IP=${BRINGUP_IPS[$(($SELECTION-1))]}
+                is_first_login $(($SELECTION-1))
+            else
+                echo "输入错误,请在1...${count}中选择"
+            fi
         else
             while [ $i -lt $count ]
             do
-                add_color_for_echo " IP: ${TMP_IPS[$i]}
-                LOCATION: ${TMP_LOCATION[$i]}"
+                add_color_for_echo "IP: ${TMP_IPS[$i]}\n LOCATION: ${TMP_LOCATION[$i]}"
                 let 'i++'
             done
+            echo "which server you want to login ?"
+            echo -n "<1...$count>?"
+            read SELECTION
+            case $SELECTION in
+                [0-9]*)
+                    LOGIN_IP=${TMP_IPS[$(($SELECTION-1))]}
+                    is_first_login $(($SELECTION-1))
+                    ;;
+                *)
+                    LOGIN_IP=${BRINGUP_IPS[0]}
+                    is_first_login 0
+                    ;;
+            esac
         fi
-        echo "which server you want to login ?"
-        echo -n "<1...$count>?"
-        read SELECTION
-        case $SELECTION in
-            [0-9]*)
-            LOGIN_IP=${TMP_IPS[$(($SELECTION-1))]}
-            is_first_login $(($SELECTION-1))
-            ;;
-        *)
-            LOGIN_IP=${BRINGUP_IPS[0]}
-            is_first_login 0
-            ;;
-    esac
     fi
 }
 
@@ -133,5 +144,6 @@ function bringup_ssh
     do_choice
 
     ssh bringup@$LOGIN_IP
+    unset LOGIN_IP
 
 }
