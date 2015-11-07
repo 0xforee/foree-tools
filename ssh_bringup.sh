@@ -132,7 +132,7 @@ function bringup_ssh
         SERVER_LIST=$( ls SERVER_* )
         for SERVER in $SERVER_LIST
         do
-            search_result=$( grep -i "$1" $SERVER |grep -v ^#)
+            search_result=$( grep -i "\/$1" $SERVER |grep -v ^# )
             if [ ! -z "$search_result" ];then
                 TMP_LOCATION[$tmp_i]="$search_result"
                 TMP_IPS[$tmp_i]="${BRINGUP_IPS[$i]}"
@@ -144,6 +144,4 @@ function bringup_ssh
     do_choice
 
     ssh bringup@$LOGIN_IP
-    unset LOGIN_IP
-
 }
