@@ -20,7 +20,7 @@ function is_project_dir
         else
             echo "project dir is $project_dir"
         fi
-        PROJECT_LIST="$PROJECT_LIST\n$base_dir/$project_dir"
+        PROJECT_LIST="$PROJECT_LIST$base_dir/$project_dir\n"
     else
         return 2
     fi

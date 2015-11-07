@@ -1,10 +1,8 @@
 #!/bin/bash
-SERVER_IP_1=172.16.132.36
-SERVER_IP_2=172.16.132.38
-LOGIN_IP=$SERVER_IP_1
-PROJECT_LIST=~/bin/project_list
+PROJECT_DIR=/home/fbash/.config/foree-tools
 PROJECT_CONF=/home/fbash/.config/foree-tools/foree-tools.conf
-DO_CHOICE="true"
+TMP_IPS=()
+TMP_LOCATION=()
 
 source $PROJECT_CONF
 
@@ -31,9 +29,45 @@ function yes_or_no
     esac
 }
 
+function do_choice
+{
+    local i=0
+    local count=${#TMP_IPS[@]}
+    if [ $count -eq '1' ];then
+        add_color_for_echo " IP: ${TMP_IPS[$i]}
+        LOCATION: ${TMP_LOCATION[$i]}"
+        LOGIN_IP=${TMP_IPS[$i]}
+    else
+        if [ $count -eq '0' ];then
+            server_info
+            echo "未指定项目或指定的项目不存在!!!"
+            count=${#BRINGUP_IPS[@]}
+        else
+            while [ $i -lt $count ]
+            do
+                add_color_for_echo " IP: ${TMP_IPS[$i]}
+                LOCATION: ${TMP_LOCATION[$i]}"
+                let 'i++'
+            done
+        fi
+        echo "which server you want to login ?"
+        echo -n "<1...$count>?"
+        read SELECTION
+        case $SELECTION in
+            [0-9]*)
+            LOGIN_IP=${TMP_IPS[$(($SELECTION-1))]}
+            is_first_login $(($SELECTION-1))
+            ;;
+        *)
+            LOGIN_IP=${BRINGUP_IPS[0]}
+            is_first_login 0
+            ;;
+    esac
+    fi
+}
+
 function server_info
 {
-    echo "which server you want to login ?"
 
     for local_i in ${!BRINGUP_IPS[@]}
     do
@@ -69,7 +103,8 @@ function is_first_login
             echo -e "\033[33m If you want to login without input passwd \033[0m"
             echo -e "\033[33m You must generate your rsa key first!! \033[0m"
             add_color_for_echo "Generate now(y/n)?"
-            if [ yes_or_no -eq '1' ];then
+            yes_or_no
+            if [ $? -eq '1' ];then
                 ssh-keygen -t rsa
                 is_first_login $1
             fi
@@ -79,42 +114,24 @@ function is_first_login
 
 function bringup_ssh
 {
+    cd $PROJECT_DIR
+    local i=0
+    local tmp_i=0
     if [ ! -z "$1" ];then
-        search_result=$( grep -i "$1" $PROJECT_CONF |awk -F : '{print $1}')
-        if [ ! -z "$search_result" ];then
-            if [ "$search_result"x = "SERVER_1"x ];then
-                DO_CHOICE="false"
-                LOGIN_IP="$SERVER_IP_1"
-                echo "项目在 $search_result"
-            elif [ "$search_result"x = "SERVER_IP_2"x ];then
-                DO_CHOICE="false"
-                LOGIN_IP="$SERVER_IP_2"
-                echo "项目在 $search_result"
-            else
-                echo "多个服务器同时存在$1 项目，请选择"
+        SERVER_LIST=$( ls SERVER_* )
+        for SERVER in $SERVER_LIST
+        do
+            search_result=$( grep -i "$1" $SERVER )
+            if [ ! -z "$search_result" ];then
+                TMP_LOCATION[$tmp_i]="$search_result"
+                TMP_IPS[$tmp_i]="${BRINGUP_IPS[$i]}"
+                let 'tmp_i++'
             fi
-        else
-            echo "没有指定的项目存在,请在以下项目中选择"
-        fi
+            let 'i++'
+        done
     fi
-
-    if [ "$DO_CHOICE"x = "true"x ];then
-        server_info
-        echo -n "<1/2>?"
-        read SELECTION
-
-        case "$SELECTION" in 
-            2)
-                LOGIN_IP=${BRINGUP_IPS[1]}
-                ;;
-            *)
-                LOGIN_IP=${BRINGUP_IPS[0]}
-                SELECTION=1
-                ;;
-        esac
-        is_first_login $(($SELECTION-1))
-    fi
+    do_choice
 
     ssh bringup@$LOGIN_IP
+
 }
-bringup_ssh
