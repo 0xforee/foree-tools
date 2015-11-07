@@ -125,6 +125,8 @@ function is_first_login
 
 function bringup_ssh
 {
+    TMP_IPS=()
+    TMP_LOCATION=()
     cd $PROJECT_DIR
     local i=0
     local tmp_i=0
