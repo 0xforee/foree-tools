@@ -83,7 +83,7 @@ function server_info
     for local_i in ${!BRINGUP_IPS[@]}
     do
         echo "$((local_i+1)). ${BRINGUP_IPS[$local_i]}"
-        cat ~/.config/foree-tools/${BRINGUP_PROJECT_LIST[$local_i]}
+        cat ~/.config/foree-tools/${BRINGUP_PROJECT_LIST[$local_i]}|grep -v ^#
     done
 
     #echo -n "   bringup:"
@@ -132,7 +132,7 @@ function bringup_ssh
         SERVER_LIST=$( ls SERVER_* )
         for SERVER in $SERVER_LIST
         do
-            search_result=$( grep -i "$1" $SERVER )
+            search_result=$( grep -i "$1" $SERVER |grep -v ^#)
             if [ ! -z "$search_result" ];then
                 TMP_LOCATION[$tmp_i]="$search_result"
                 TMP_IPS[$tmp_i]="${BRINGUP_IPS[$i]}"

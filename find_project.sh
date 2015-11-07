@@ -63,4 +63,3 @@ function find_project_dir
     cd $CURRENT_DIR
 
 }
-find_project_dir
