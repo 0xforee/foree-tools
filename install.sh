@@ -18,8 +18,9 @@ if [ ! -f $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME -o ./foree-tools.conf.default -nt
     echo "init/update success"
 fi
 
-#遍历配置脚本中的数组来初始化
+#生成存放project的对应文件
 source $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME
+
 for i in ${!BRINGUP_PROJECT_LIST[@]}
 do
     echo ${BRINGUP_PROJECT_LIST[$i]}
@@ -27,3 +28,17 @@ do
         touch $TOOLS_CONFIG_DIR/SERVER_$i
     fi
 done
+
+#在.bashrc中source 环境变量
+if [ ! -z "$(cat ~/.bashrc |grep foreetools)" ];then
+   echo "exist already! skip !"
+else
+    whattime=`date +%Y_%m%d_%H%M`
+    cat >>~/.bashrc <<EOF
+# $whattime add by foreetools
+source ~/github/foree-tools/fadb_funtion
+source ~/github/foree-tools/ssh_bringup.sh
+source ~/github/foree-tools/find_project.sh
+EOF
+echo "add success"
+fi
