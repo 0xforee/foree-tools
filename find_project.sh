@@ -6,7 +6,7 @@
 
 #定义变量
 ROJECT_LIST=""
-source /home/fbash/.config/foree-tools/foree-tools.conf
+source ~/.config/foree-tools/foree-tools.conf
 
 #判断给定的目录是否是project根目录
 function is_project_dir

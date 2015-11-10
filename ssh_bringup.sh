@@ -1,6 +1,6 @@
 #!/bin/bash
-PROJECT_DIR=/home/fbash/.config/foree-tools
-PROJECT_CONF=/home/fbash/.config/foree-tools/foree-tools.conf
+PROJECT_DIR=~/.config/foree-tools
+PROJECT_CONF=~/.config/foree-tools/foree-tools.conf
 TMP_IPS=()
 TMP_LOCATION=()
 
