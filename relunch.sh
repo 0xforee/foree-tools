@@ -4,7 +4,7 @@
 ### Date:20151109
 
 #取得当前目录的根目录
-function gettopdir()
+function _gettopdir()
 {
 
     TOPDIRFILE=build/core/envsetup.mk
@@ -26,10 +26,10 @@ fi
     fi
 }
 
-function relunch()
+function _relunch()
 {
     HERE=`pwd`
-    TOPDIR=$(gettopdir)
+    TOPDIR=$(_gettopdir)
 
     if [ -d $TOPDIR/out/target/product ];then
         cd $TOPDIR/out/target/product
@@ -57,4 +57,4 @@ function relunch()
     lunch $lunch_name
     cd $HERE
 }
-relunch
+_relunch
