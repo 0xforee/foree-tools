@@ -1,7 +1,0 @@
-#!/bin/bash
-function repo_sync
-{
-    whattime=`date +%Y_%m%d_%H%M`
-    repo sync -c -d
-    repo start M76-l1_base_${whattime} --all
-}
