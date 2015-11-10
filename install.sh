@@ -37,6 +37,7 @@ else
 source ~/github/foree-tools/fadb_funtion
 source ~/github/foree-tools/ssh_bringup.sh
 source ~/github/foree-tools/find_project.sh
+source ~/github/foree-tools/common.sh
 EOF
 echo "add success"
 fi
