@@ -125,6 +125,7 @@ function is_first_login
 
 function bringup_ssh
 {
+    HERE=`pwd`
     TMP_IPS=()
     TMP_LOCATION=()
     cd $PROJECT_DIR
@@ -144,6 +145,8 @@ function bringup_ssh
         done
     fi
     do_choice
+    cd $HERE
+
 
     ssh bringup@$LOGIN_IP
 }
