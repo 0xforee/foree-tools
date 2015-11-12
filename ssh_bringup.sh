@@ -144,9 +144,10 @@ function bringup_ssh
             let 'i++'
         done
     fi
-    do_choice
+
     cd $HERE
 
+    do_choice
 
     ssh bringup@$LOGIN_IP
 }
