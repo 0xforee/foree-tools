@@ -71,7 +71,7 @@ function repo_sync
     unset DEFAULT_BRANCH
 }
 
-function _relunch()
+function relunch()
 {
     HERE=`pwd`
     TOPDIR=$(_gettopdir)
