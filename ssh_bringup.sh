@@ -33,8 +33,11 @@ function yes_or_no
 
 function do_choice
 {
+    local LOGIN_IP
     local i=0
+    local selection
     local count=${#TMP_IPS[@]}
+
     if [ $count -eq '1' ];then
         add_color_for_echo " IP: ${TMP_IPS[$i]}
         LOCATION: ${TMP_LOCATION[$i]}"
@@ -46,13 +49,18 @@ function do_choice
             count=${#BRINGUP_IPS[@]}
             echo "which server you want to login ?"
             echo -n "<1...$count>?"
-            read SELECTION
+            read selection
             #如果选择不为0,且小于等于IP数量,并且选择是个数字,那么就去选择IP
-            if [ $SELECTION -ne '0' -a $SELECTION -le $count ] && [[ $SELECTION =~ [0-9]* ]];then
-                LOGIN_IP=${BRINGUP_IPS[$(($SELECTION-1))]}
-                is_first_login $(($SELECTION-1))
+            if [ -z $selection ];then
+                LOGIN_IP=${BRINGUP_IPS[0]}
+                add_color_for_echo "IP: $LOGIN_IP"
             else
-                echo "输入错误,请在1...${count}中选择"
+                if [ $selection -ne '0' -a $selection -le $count ] && [[ $selection =~ [0-9]* ]];then
+                    LOGIN_IP=${BRINGUP_IPS[$(($selection-1))]}
+                    is_first_login $(($selection-1))
+                else
+                    echo "输入错误,请在1...${count}中选择"
+                fi
             fi
         else
             while [ $i -lt $count ]
@@ -62,11 +70,11 @@ function do_choice
             done
             echo "which server you want to login ?"
             echo -n "<1...$count>?"
-            read SELECTION
-            case $SELECTION in
+            read selection
+            case $selection in
                 [0-9]*)
-                    LOGIN_IP=${TMP_IPS[$(($SELECTION-1))]}
-                    is_first_login $(($SELECTION-1))
+                    LOGIN_IP=${TMP_IPS[$(($selection-1))]}
+                    is_first_login $(($selection-1))
                     ;;
                 *)
                     LOGIN_IP=${BRINGUP_IPS[0]}
@@ -75,6 +83,8 @@ function do_choice
             esac
         fi
     fi
+
+    ssh bringup@$LOGIN_IP
 }
 
 function server_info
@@ -148,6 +158,4 @@ function bringup_ssh
     cd $HERE
 
     do_choice
-
-    ssh bringup@$LOGIN_IP
 }
