@@ -37,7 +37,7 @@ function _gettarget()
         return 1
     fi
 
-    previous_path=$(find . -maxdepth 2 -name "previous_build_config.mk" |xargs ls -t1)
+    previous_path=$(find . -maxdepth 2 -name "previous_build_config.mk" |xargs ls -t1 | grep -v "generic")
     previous_number=$( echo "$previous_path" |wc -l )
     if [ $previous_number -eq '0' ];then
         echo "previous_build_config.mk not found, please run lunch manually first"
