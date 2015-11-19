@@ -48,6 +48,7 @@ else
 source ~/.config/foree-tools/fadb_funtion
 source ~/.config/foree-tools/ssh_bringup.sh
 source ~/.config/foree-tools/common.sh
+complete -W "M80_base M76-l1_base M86_flyme5 M76_base M75_base M71C-l1_base M71-l1_base M85-l1_base M88_base" bringup_ssh
 # end by foree-tools
 EOF
 echo "add success"
