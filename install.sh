@@ -12,10 +12,10 @@ if [ ! -d $TOOLS_CONFIG_DIR ];then
     mkdir -p $TOOLS_CONFIG_DIR
 fi
 
-#初始化或者更新配置文件
-if [ ! -f $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME -o ./foree-tools.conf.default -nt $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME ];then
+#初始化配置文件
+if [ ! -f $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME ];then
     cp ./foree-tools.conf.default $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME
-    if [ $? -eq '0' ];then echo "init/update success";fi
+    if [ $? -eq '0' ];then echo "Installing foree-tools.conf";fi
 fi
 
 #生成存放project的对应文件
@@ -27,26 +27,26 @@ do
     fi
 done
 
-#初始化或者更新相关文件
+#初始化相关文件
 for function_list_file in $FUNCTION_LIST
 do
-    if [ ! -f $TOOLS_CONFIG_DIR/$function_list_file -o ./$function_list_file -nt $TOOLS_CONFIG_DIR/$function_list_file ];then
+    if [ ! -f $TOOLS_CONFIG_DIR/$function_list_file ];then
         echo "Installing $function_list_file ......."
         cp ./$function_list_file $TOOLS_CONFIG_DIR/$function_list_file
     fi
 done
 
 #在.bashrc中source 环境变量
-if [ ! -z "$(cat ~/.bashrc |grep foreetools)" ];then
+if [ ! -z "$(cat ~/.bashrc |grep foree-tools)" ];then
    echo "exist already! skip !"
 else
     whattime=`date +%Y_%m%d_%H%M`
     cat >>~/.bashrc <<EOF
-# $whattime add by foreetools
+# $whattime add by foree-tools
 source ~/.config/foree-tools/fadb_funtion
 source ~/.config/foree-tools/ssh_bringup.sh
-source ~/.config/foree-tools/find_project.sh
 source ~/.config/foree-tools/common.sh
+# end by foree-tools
 EOF
-echo "add success"
+echo "Add success"
 fi
