@@ -5,7 +5,7 @@
 
 source ./foree-tools.conf.default
 
-FUNCTION_LIST="common.sh fastboot_flash.sh pick_branch.sh ssh_bringup.sh fadb_funtion find_project.sh"
+FUNCTION_LIST="common.sh fastboot_flash.sh pick_branch.sh ssh_bringup.sh fadb_funtion"
 
 #创建程序的配置目录
 if [ ! -d $TOOLS_CONFIG_DIR ];then

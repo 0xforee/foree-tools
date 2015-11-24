@@ -4,7 +4,7 @@
 ### Date: 20151119
 source ./foree-tools.conf.default
 
-FUNCTION_LIST="common.sh fastboot_flash.sh pick_branch.sh ssh_bringup.sh fadb_funtion find_project.sh"
+FUNCTION_LIST="common.sh fastboot_flash.sh pick_branch.sh ssh_bringup.sh fadb_funtion"
 
 #更新配置文件
 if [ ./foree-tools.conf.default -nt $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME ];then
