@@ -4,7 +4,7 @@
 ### Date: 20151119
 source ./foree-tools.conf.default
 
-FUNCTION_LIST="common.sh fastboot_flash.sh pick_branch.sh ssh_bringup.sh fadb_funtion"
+FUNCTION_LIST="common.sh fastboot_flash.sh pick_branch.sh ssh_bringup.sh fadb_funtion fkill"
 
 #更新配置文件
 if [ ./foree-tools.conf.default -nt $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME ];then
@@ -45,9 +45,10 @@ else
     whattime=`date +%Y_%m%d_%H%M`
     cat >>~/.bashrc <<EOF
 # $whattime add by foree-tools
-source ~/.config/foree-tools/fadb_funtion
-source ~/.config/foree-tools/ssh_bringup.sh
 source ~/.config/foree-tools/common.sh
+source ~/.config/foree-tools/ssh_bringup.sh
+source ~/.config/foree-tools/fadb_funtion
+source ~/.config/foree-tools/fkill
 complete -W "M80_base M76-l1_base M86_flyme5 M76_base M75_base M71C-l1_base M71-l1_base M85-l1_base M88_base" bringup_ssh
 # end by foree-tools
 EOF
