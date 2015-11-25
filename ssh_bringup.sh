@@ -6,31 +6,6 @@ TMP_LOCATION=()
 
 source $PROJECT_CONF
 
-function add_color_for_echo
-{
-    echo -e "\033[33m 
-    $1
-    \033[0m"
-}
-
-
-function yes_or_no
-{
-    read input_choice
-    case $input_choice in
-        y|yes|Y|Yes)
-            return 1
-            ;;
-        n|no|N|NO)
-            return 0
-            ;;
-        *)
-            echo "input error,please again"
-            yes_or_no
-            ;;
-    esac
-}
-
 function do_choice
 {
     local LOGIN_IP
