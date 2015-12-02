@@ -1,16 +1,22 @@
 dailybuild/M86_flyme5
+dailybuild/M80_bsp
 dailybuild/M71-l1_base
 dailybuild/M85-l1_base
 SOURCE/M80_base_first
+SOURCE/M81_base
 SOURCE/M80_base
+SOURCE/M80_bsp
 SOURCE/MZ-l1_base_mirror
 android/reserved/patchrom
 android/reserved/android-5.0.1_r1
 android/android_6.0
 bringup/M88_base
 bringup/M81-l1_base_for_bringup
+bringup/M88-l1_base_bsp_v2.95
+bringup/M88-l1_base_empty
 bringup/M81-l1_base
+bringup/zsm
 bringup/M81_bsp
-bringup/M81_base
+bringup/M81C-l1_base
 bringup/M81C_base
 
