@@ -113,3 +113,14 @@ function relunch()
     lunch $lunch_name
     cd $HERE
 }
+
+function is_reference()
+{
+    local alternate=".repo/manifests.git/objects/info/alternates"
+    T=$(_gettopdir)
+    if [ -f "$T/$alternate" ];then
+        cat "$T/$alternate"
+    else
+        echo "No Reference"
+    fi
+}
