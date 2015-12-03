@@ -79,7 +79,7 @@ function _gettarget()
     if [ -d $TOPDIR/out/target/product ];then
         cd $TOPDIR/out/target/product
     else
-        echo "You Must be run lunch manually first !!"
+        add_color_for_echo "You Must be run lunch manually first !!" >&2
         return 1
     fi
 
