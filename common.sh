@@ -49,6 +49,27 @@ function _gettopdir()
     fi
 }
 
+function _getrepodir()
+{
+
+    local REPODIRFILE=.repo/manifests/default.xml
+    TOPDIR=
+    HERE=`pwd`
+    if [ ! -f $REPODIRFILE ];then
+        while [ ! -f $REPODIRFILE -a "$PWD" != "/" ]; do
+            \cd ..
+            TOPDIR=`pwd -P`
+        done
+    else
+        TOPDIR=`pwd -P`
+    fi
+
+    cd $HERE
+    if [ -f $TOPDIR/$REPODIRFILE ];then
+        echo $TOPDIR
+    fi
+}
+
 function _gettarget()
 {
     local TOPDIR=$(_gettopdir)
@@ -84,7 +105,7 @@ function repo_sync
 {
     local whattime
     local DEFAULT_BRANCH
-    local TOPDIR=$(_gettopdir)
+    local TOPDIR=$(_getrepodir)
 
     if [ -z "$TOPDIR" ];then echo "Not Found Project Here !!";return 1 ;fi
 
