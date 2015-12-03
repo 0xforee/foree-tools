@@ -112,9 +112,11 @@ function repo_sync
     cd $TOPDIR
 
     if [ -f .repo/manifests/default.xml ];then
-        DEFAULT_BRANCH=$(cat .repo/manifests/default.xml |grep default |grep revision  |awk -F "\"" '{print $2}')
+        pushd .repo/manifests
+        DEFAULT_BRANCH=$(git br -r | head -n 1 |awk -F "/" '{print $3}' )
+        popd
     else
-        echo "default.xml not found !"
+        add_color_for_echo "default.xml not found !" >&2
         return 1
     fi
     whattime=`date +%Y_%m%d_%H%M`
