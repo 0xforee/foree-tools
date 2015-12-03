@@ -2,42 +2,42 @@
 #简易的任务管理:
 #根据关键字决定是否杀掉进程
 
-function fkill
-{
-    #输入关键字可用
-    if [ -z "$1" ];then
-        echo
-        echo "Usage: fkill <keyword>"
-        echo
-        return
-    fi
+SOFT_DIR=$(dirname $(realpath $0))
+source $SOFT_DIR/common.sh
 
-    #去除fkill本身以及grep的进程信息
-    PS_INFO=`ps aux |grep "$1"|grep -v "fkill" |awk '!/grep/{print $1"/"$2}'`
+#输入关键字可用
+if [ -z "$1" ];then
+    echo
+    echo "Usage: fkill <keyword>"
+    echo
+    exit
+fi
 
-    if [ -n "$PS_INFO" ]
-    then
-        ps aux |grep "$1"|grep -v "grep"|grep -v "fkill"
-        echo -n "kill them [y/n]?"
-        RESULT=$(yes_or_no)
-        case $RESULT in
-            #显示输入n来退出
-            n)
-            return;;
-        y)
-            for i in $PS_INFO
-            do
-                FPID=${i#*/}
-                FUSER=${i%/*}
-                if [ "$FUSER" = "root" ];then
-                    sudo kill -9 "$FPID"
-                else
-                    kill -9 "$FPID"
-                fi
-            done
-            ;;
-    esac
+#去除fkill本身以及grep的进程信息
+PS_INFO=`ps aux |grep "$1"|grep -v "fkill" |awk '!/grep/{print $1"/"$2}'`
+
+if [ -n "$PS_INFO" ]
+then
+    ps aux |grep "$1"|grep -v "grep"|grep -v "fkill"
+    echo -n "kill them [y/n]?"
+    RESULT=$(yes_or_no)
+    case $RESULT in
+        #显示输入n来退出
+        n)
+        exit;;
+    y)
+        for i in $PS_INFO
+        do
+            FPID=${i#*/}
+            FUSER=${i%/*}
+            if [ "$FUSER" = "root" ];then
+                sudo kill -9 "$FPID"
+            else
+                kill -9 "$FPID"
+            fi
+        done
+        ;;
+esac
 else
     echo 'no process found'
 fi
-}
