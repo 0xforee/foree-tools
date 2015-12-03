@@ -4,7 +4,9 @@ PROJECT_CONF=~/.config/foree-tools/foree-tools.conf
 TMP_IPS=()
 TMP_LOCATION=()
 
-source $PROJECT_CONF
+SOFT_DIR=$(dirname $(realpath $0))
+source $SOFT_DIR/foree-tools.conf
+#source $PROJECT_CONF
 
 function do_choice
 {

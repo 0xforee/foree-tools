@@ -7,7 +7,7 @@
 #定义变量
 ROJECT_LIST=""
 CURRENT_DIR=`pwd`
-source $CURRENT_DIR/foree-tools.conf.default
+source $CURRENT_DIR/foree-tools.conf
 
 #判断给定的目录是否是project根目录
 function is_project_dir

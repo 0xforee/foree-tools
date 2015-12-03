@@ -3,29 +3,14 @@
 ### Author: foree
 ### Date: 20151025
 
-source ./foree-tools.conf.default
+source ./foree-tools.conf
 
-FUNCTION_LIST="common.sh fastboot_flash.sh pick_branch.sh ssh_bringup.sh fadb_funtion fkill"
+FUNCTION_LIST="common.sh fastboot_flash.sh pick_branch.sh ssh_bringup.sh fadb_funtion fkill foree-tools.conf SERVER_0 SERVER_1"
 
 #创建程序的配置目录
 if [ ! -d $TOOLS_CONFIG_DIR ];then
     mkdir -p $TOOLS_CONFIG_DIR
 fi
-
-#初始化配置文件
-if [ ! -f $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME ];then
-    cp ./foree-tools.conf.default $TOOLS_CONFIG_DIR/$TOOLS_CONFIG_NAME
-    if [ $? -eq '0' ];then echo "Installing foree-tools.conf";fi
-fi
-
-#生成存放project的对应文件
-for i in ${!BRINGUP_PROJECT_LIST[@]}
-do
-    if [ "${BRINGUP_PROJECT_LIST[$i]}"x = "SERVER_$i"x -a ! -f $TOOLS_CONFIG_DIR/SERVER_$i ];then
-        echo "Installing ${BRINGUP_PROJECT_LIST[$i]}......"
-        cp ./SERVER_${i}_default $TOOLS_CONFIG_DIR/SERVER_$i
-    fi
-done
 
 #初始化相关文件
 for function_list_file in $FUNCTION_LIST
@@ -44,9 +29,7 @@ else
     cat >>~/.bashrc <<EOF
 # $whattime add by foree-tools
 source ~/.config/foree-tools/common.sh
-source ~/.config/foree-tools/ssh_bringup.sh
 source ~/.config/foree-tools/fadb_funtion
-source ~/.config/foree-tools/fkill
 complete -W "M80_base M76-l1_base M86_flyme5 M76_base M75_base M71C-l1_base M71-l1_base M85-l1_base M88_base" bringup_ssh
 # end by foree-tools
 EOF
