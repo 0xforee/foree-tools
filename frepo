@@ -1,0 +1,32 @@
+#!/bin/bash
+### Description: repo 相关命令的封装
+### Author: foree
+### Date:20151204
+SOFT_DIR=$(dirname $(realpath $0))
+
+source $SOFT_DIR/common.sh
+
+option=$1
+if [ $# -ge 1 -a ! -z "$option" ];then
+    case "$option" in
+        init)
+            if [ "x$2" = "x-b" -a ! -z $2 ];then
+                repo init --reference=~/android/MZ-l1_base_mirror -u ssh://liming1@review.rnd.meizu.com:29999/platform/manifest -b "$3"
+            else
+                echo
+                add_color_for_echo "Usage: repo_init -b branch_name"
+                echo
+            fi
+            ;;
+        sync)
+            echo "repo sync"
+            ;;
+        reference)
+            echo "repo reference"
+            ;;
+    esac
+else
+    echo
+    add_color_for_echo "Usage: frepo [init|sync|reference]"
+    echo
+fi
