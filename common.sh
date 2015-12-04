@@ -101,29 +101,6 @@ function _gettarget()
 
 }
 
-function repo_sync
-{
-    local whattime
-    local DEFAULT_BRANCH
-    local TOPDIR=$(_getrepodir)
-
-    if [ -z "$TOPDIR" ];then echo "Not Found Project Here !!";return 1 ;fi
-
-    cd $TOPDIR
-
-    if [ -f .repo/manifests/default.xml ];then
-        pushd .repo/manifests
-        DEFAULT_BRANCH=$(git br -r | head -n 1 |awk -F "/" '{print $3}' )
-        popd
-    else
-        add_color_for_echo "default.xml not found !" >&2
-        return 1
-    fi
-    whattime=`date +%Y_%m%d_%H%M`
-    repo sync -c -d
-    repo start ${DEFAULT_BRANCH}_${whattime} --all
-}
-
 function relunch()
 {
     HERE=`pwd`
@@ -137,13 +114,3 @@ function relunch()
     cd $HERE
 }
 
-function is_reference()
-{
-    local alternate=".repo/manifests.git/objects/info/alternates"
-    T=$(_gettopdir)
-    if [ -f "$T/$alternate" ];then
-        cat "$T/$alternate"
-    else
-        echo "No Reference"
-    fi
-}
