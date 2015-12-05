@@ -29,6 +29,7 @@ function _export_function_to_shell()
         whattime=`date +%Y_%m%d_%H%M`
         cat ~/$SHELL_RC <<EOF
 # $whattime add by foree-tools
+# This is auto generate by foree-tools, Do Not Delete it
 source $DEBUG_PATH/export_to_shell
 # end by foree-tools
 EOF
@@ -64,6 +65,8 @@ function main()
         #取得DEBUG路径,并写入配置文件
         DEBUG_PATH=`pwd`
         sed -i "/DEBUG_PATH/ s#=#=$DEBUG_PATH#" ./foree-tools.conf
+        #取得链接的文件,并写入配置文件
+        sed -i "/LINK_LIST/ s#=#="$LINK_LIST"#" ./foree-tools.conf
 
         LINK_PATH=$DEBUG_PATH
 
