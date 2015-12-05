@@ -1,0 +1,6 @@
+# 此文件存放需要export到shell的一些脚本(使用.export后缀)
+
+function relunch()
+{
+    source ~/github/foree-tools/relunch.export
+}

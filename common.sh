@@ -100,17 +100,3 @@ function _gettarget()
     echo $lunch_name
 
 }
-
-function relunch()
-{
-    HERE=`pwd`
-    TOPDIR=$(_gettopdir)
-
-    lunch_name=$(_gettarget)
-
-    cd $TOPDIR
-    source build/envsetup.sh
-    lunch $lunch_name
-    cd $HERE
-}
-
