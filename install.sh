@@ -24,7 +24,7 @@ function _export_function_to_shell()
 
     #是否已经导出函数列表
     if [ ! -z "$(cat ~/$SHELL_RC |grep foree-tools)" ];then
-        echo "$SHELL_RC exist already! skip !"
+        echo "$SHELL_RC write already! skip !"
     else
         whattime=`date +%Y_%m%d_%H%M`
         cat>> ~/$SHELL_RC <<EOF
@@ -52,7 +52,7 @@ function _link_script()
 function main()
 {
     #检查是否以sudo运行命令
-    if (sudo echo);then
+    if (sudo echo -n);then
         echo -n
     else
         echo "You must be root Or use \"sudo install.sh\""

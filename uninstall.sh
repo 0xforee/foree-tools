@@ -33,7 +33,6 @@ function _clean_link_script()
     if [ -n "$LINK_LIST" ];then
         for i in $LINK_LIST
         do
-            echo $i
             if [ -L /usr/local/bin/$i ];then
                 sudo rm /usr/local/bin/$i
                 echo "Cleaning $i =====> /usr/local/bin/$i"
@@ -47,7 +46,7 @@ function _clean_link_script()
 function main()
 {
     #检查是否以sudo运行命令
-    if (sudo echo);then
+    if (sudo echo -n);then
         echo -n
     else
         echo "You must be root Or use \"sudo uninstall.sh\""
