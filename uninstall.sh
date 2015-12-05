@@ -33,7 +33,8 @@ function _clean_link_script()
     if [ -n "$LINK_LIST" ];then
         for i in $LINK_LIST
         do
-            if [ -f /usr/local/bin/$i -a -n "$i" ];then
+            echo $i
+            if [ -L /usr/local/bin/$i ];then
                 sudo rm /usr/local/bin/$i
                 echo "Cleaning $i =====> /usr/local/bin/$i"
             fi
