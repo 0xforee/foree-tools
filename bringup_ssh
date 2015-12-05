@@ -1,12 +1,13 @@
 #!/bin/bash
-PROJECT_DIR=~/.config/foree-tools
-PROJECT_CONF=~/.config/foree-tools/foree-tools.conf
 TMP_IPS=()
 TMP_LOCATION=()
 
 SOFT_DIR=$(dirname $(realpath $0))
 source $SOFT_DIR/foree-tools.conf
 source $SOFT_DIR/common.sh
+
+PROJECT_DIR=$SOFT_DIR
+PROJECT_CONF=$SOFT_DIR/foree-tools.conf
 #source $PROJECT_CONF
 
 function do_choice
@@ -23,8 +24,8 @@ function do_choice
         LOGIN_IP=${TMP_IPS[$i]}
     else
         if [ $count -eq '0' ];then
+            echo "未指定项目或指定的项目不存在!!!,请在以下项目选择:"
             server_info
-            echo "未指定项目或指定的项目不存在!!!"
             if [ -z "$IS_SEARCH_MODE" ];then #查询模式
                 count=${#BRINGUP_IPS[@]}
                 echo "which server you want to login ?"
@@ -78,7 +79,7 @@ function server_info
     for local_i in ${!BRINGUP_IPS[@]}
     do
         echo "$((local_i+1)). ${BRINGUP_IPS[$local_i]}"
-        cat ~/.config/foree-tools/${BRINGUP_PROJECT_LIST[$local_i]}|grep -v ^#
+        cat $PROJECT_DIR/${BRINGUP_PROJECT_LIST[$local_i]}|grep -v ^#
     done
 
     #echo -n "   bringup:"
