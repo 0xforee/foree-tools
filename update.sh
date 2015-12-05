@@ -3,6 +3,7 @@
 ### Author: foree
 ### Date: 20151119
 source ./foree-tools.conf
+SOFT_DIR=$(dirname $0)
 
 FUNCTION_LIST=`ls |grep -v "install.sh"| grep -v "update.sh" | grep -v "README.md"`
 
@@ -12,6 +13,12 @@ FUNCTION_LIST=`ls |grep -v "install.sh"| grep -v "update.sh" | grep -v "README.m
 
 #更新服务器的project列表,不加参数,默认不更新服务器project列表
 if [ "x$1" = "x-a" ];then
+    cd $SOFT_DIR
+    git pull
+    ./find_project.sh
+    if [ "$?" -ne '0' ];then echo "find project error" ;exit 1 ;fi
+    cd -
+elif [ "x$1" = "x-u" ];then
     ./find_project.sh
     if [ "$?" -ne '0' ];then echo "find project error" ;exit 1 ;fi
 else

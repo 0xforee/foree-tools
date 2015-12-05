@@ -1,0 +1,21 @@
+#!/bin/bash
+### Description: 用于更新与卸载foree-tools
+### Author:foree
+### Date:20151205
+
+SOFT_DIR=$(dirname $(realpath $0))
+
+option=$1
+case $option in
+    -C)
+        echo "uninstall foree-tools"
+        $SOFT_DIR/uninstall.sh
+        ;;
+    -u)
+        echo "update foree-tools"
+        $SOFT_DIR/update.sh -u
+        ;;
+    *)
+        echo "Usage: ftools [-C|-u]"
+        ;;
+esac
