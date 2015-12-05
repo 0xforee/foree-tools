@@ -1,3 +1,4 @@
+# update at 2015_1205_2134
 android/android-5.1.1_r1
 android/android-5.1.0_r3
 android/android-5.0.1_r1
@@ -15,4 +16,5 @@ bugfix/M86_flyme5_keliang
 bugfix/M86_flyme5
 bringup/M88-l1_base
 bringup/M81C-l1_base_bsp_v2.95
+bringup/M88-l1_flyme_base
 
