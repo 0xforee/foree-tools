@@ -12,18 +12,18 @@ function _delete_export()
 
     #判断当前shell
     if (echo -n $SHELL |grep -q "bash" ); then
-        SHELL_RC=.bashrc
+        SHELL_RC=~/.bashrc
     elif ( echo -n $SHELL |grep -q "zsh" ); then
-        SHELL_RC=.zshrc
+        SHELL_RC=~/.zshrc
     fi
 
     #是否已经导出函数列表
-    if [ ! -z "$(cat ~/$SHELL_RC |grep foree-tools)" ];then
+    if [ ! -z "$(cat $SHELL_RC |grep foree-tools)" ];then
         #清除export命令
-        sed -i "/add by foree-tools/,/end by foree-tools/d" 
-        echo "Clean success"
+        sed -i "/add by foree-tools/,/end by foree-tools/d" $SHELL_RC
+        echo "Clean Success =====> $SHELL_RC"
     else
-        echo "already cleaned !"
+        echo "Already Cleaned =====> $SHELL_RC "
     fi
 }
 
@@ -63,7 +63,7 @@ function main()
 
     else #用户模式
 
-        echo "You will clean User configuration(yes/no)?"
+        echo -n "You will clean User configuration(yes/no)?"
         RSEULT=$(yes_or_no)
         case $RESULT in
             n)
@@ -76,7 +76,7 @@ function main()
         if [ -d $TOOLS_CONFIG_DIR ];then
             rm $TOOLS_CONFIG_DIR -rf
         else
-            echo "Already Cleaned!"
+            echo "Already Cleaned =====> $TOOLS_CONFIG_DIR"
         fi
 
     fi
