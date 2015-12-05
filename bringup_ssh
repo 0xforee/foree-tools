@@ -15,6 +15,7 @@ function do_choice
     local i=0
     local selection
     local count=${#TMP_IPS[@]}
+    local IS_SEARCH_MODE=$1
 
     if [ $count -eq '1' ];then
         add_color_for_echo " IP: ${TMP_IPS[$i]}
@@ -24,20 +25,22 @@ function do_choice
         if [ $count -eq '0' ];then
             server_info
             echo "未指定项目或指定的项目不存在!!!"
-            count=${#BRINGUP_IPS[@]}
-            echo "which server you want to login ?"
-            echo -n "<1...$count>?"
-            read selection
-            #如果选择不为0,且小于等于IP数量,并且选择是个数字,那么就去选择IP
-            if [ -z $selection ];then
-                LOGIN_IP=${BRINGUP_IPS[0]}
-                add_color_for_echo "IP: $LOGIN_IP"
-            else
-                if [ $selection -ne '0' -a $selection -le $count ] && [[ $selection =~ [0-9]* ]];then
-                    LOGIN_IP=${BRINGUP_IPS[$(($selection-1))]}
-                    is_first_login $(($selection-1))
+            if [ -z "$IS_SEARCH_MODE" ];then #查询模式
+                count=${#BRINGUP_IPS[@]}
+                echo "which server you want to login ?"
+                echo -n "<1...$count>?"
+                read selection
+                #如果选择不为0,且小于等于IP数量,并且选择是个数字,那么就去选择IP
+                if [ -z $selection ];then
+                    LOGIN_IP=${BRINGUP_IPS[0]}
+                    add_color_for_echo "IP: $LOGIN_IP"
                 else
-                    echo "输入错误,请在1...${count}中选择"
+                    if [ $selection -ne '0' -a $selection -le $count ] && [[ $selection =~ [0-9]* ]];then
+                        LOGIN_IP=${BRINGUP_IPS[$(($selection-1))]}
+                        is_first_login $(($selection-1))
+                    else
+                        echo "输入错误,请在1...${count}中选择"
+                    fi
                 fi
             fi
         else
@@ -46,23 +49,27 @@ function do_choice
                 add_color_for_echo "IP: ${TMP_IPS[$i]}\n LOCATION: ${TMP_LOCATION[$i]}"
                 let 'i++'
             done
-            echo "which server you want to login ?"
-            echo -n "<1...$count>?"
-            read selection
-            case $selection in
-                [0-9]*)
-                    LOGIN_IP=${TMP_IPS[$(($selection-1))]}
-                    is_first_login $(($selection-1))
-                    ;;
-                *)
-                    LOGIN_IP=${BRINGUP_IPS[0]}
-                    is_first_login 0
-                    ;;
-            esac
+            if [ -z "$IS_SEARCH_MODE" ];then #查询模式
+                echo "which server you want to login ?"
+                echo -n "<1...$count>?"
+                read selection
+                case $selection in
+                    [0-9]*)
+                        LOGIN_IP=${TMP_IPS[$(($selection-1))]}
+                        is_first_login $(($selection-1))
+                        ;;
+                    *)
+                        LOGIN_IP=${BRINGUP_IPS[0]}
+                        is_first_login 0
+                        ;;
+                esac
+            fi
         fi
     fi
 
-    ssh bringup@$LOGIN_IP
+    if [ -z "$IS_SEARCH_MODE" ];then
+        ssh bringup@$LOGIN_IP
+    fi
 }
 
 function server_info
@@ -116,14 +123,23 @@ function bringup_ssh
     HERE=`pwd`
     TMP_IPS=()
     TMP_LOCATION=()
+    SEARCH_MODE=
     cd $PROJECT_DIR
     local i=0
     local tmp_i=0
     if [ ! -z "$1" ];then
+        #如果是查询模式
+        if [ "x$1" = "x-s" -a -n "$2" ];then
+            SEARCH_MODE=true
+            LOAD_PROJECT=$2
+        else
+            LOAD_PROJECT=$1
+        fi
+
         SERVER_LIST=$( ls SERVER_* )
         for SERVER in $SERVER_LIST
         do
-            search_result=$( grep -i "\/$1" $SERVER |grep -v ^# )
+            search_result=$( grep -i "\/$LOAD_PROJECT" $SERVER |grep -v ^# )
             if [ ! -z "$search_result" ];then
                 TMP_LOCATION[$tmp_i]="$search_result"
                 TMP_IPS[$tmp_i]="${BRINGUP_IPS[$i]}"
@@ -135,6 +151,6 @@ function bringup_ssh
 
     cd $HERE
 
-    do_choice
+    do_choice $SEARCH_MODE
 }
 bringup_ssh $@
