@@ -55,12 +55,16 @@ function main()
     fi
 
     #调试模式
-    if [ ! -z "$1" -a "x$1" = "x-b" ];then
+    if [ ! -z "$1" -a "x$1" = "x-d" ];then
 
         #取得DEBUG路径,并擦除配置文件相关配置
         DEBUG_PATH=`pwd`
         #擦除配置文件相关配置
         sed -i "/DEBUG_PATH/ s#=.*#=#" ./foree-tools.conf
+
+        #擦除配置文件LINK_LIST,user版文件已经删除,因此不需要清理
+        sed -i "/LINK_LIST/ s#=.*#=#" ./foree-tools.conf
+        echo "Already CLeaned =====> var-LINK_LIST"
 
     else #用户模式
 
