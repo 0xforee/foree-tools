@@ -72,9 +72,7 @@ function main()
                 is_reference
                 ;;
             *)
-                echo
-                add_color_for_echo "Usage: frepo [init|sync|reference]"
-                echo
+                repo $@
                 ;;
         esac
     else
