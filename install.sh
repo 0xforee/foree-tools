@@ -6,7 +6,7 @@
 source ./foree-tools.conf
 
 #FUNCTION_LIST="common.sh fastboot_flash.sh pick_branch.sh ssh_bringup.sh fadb_funtion fkill foree-tools.conf SERVER_0 SERVER_1"
-FUNCTION_LIST=`ls |grep -v "install.sh update.sh README.md"`
+FUNCTION_LIST=`ls |grep -v "install.sh"| grep -v "update.sh" | grep -v "README.md"`
 LINK_LIST="bringup_ssh fadb fkill frepo"
 LINK_PATH=
 
@@ -24,16 +24,16 @@ function _export_function_to_shell()
 
     #是否已经导出函数列表
     if [ ! -z "$(cat ~/$SHELL_RC |grep foree-tools)" ];then
-        echo "exist already! skip !"
+        echo "$SHELL_RC exist already! skip !"
     else
         whattime=`date +%Y_%m%d_%H%M`
-        cat ~/$SHELL_RC <<EOF
+        cat>> ~/$SHELL_RC <<EOF
 # $whattime add by foree-tools
 # This is auto generate by foree-tools, Do Not Delete it
 source $DEBUG_PATH/export_to_shell
 # end by foree-tools
 EOF
-        echo "Add to $1 success"
+        echo "Add to $SHELL_RC success"
     fi
 }
 
@@ -60,13 +60,11 @@ function main()
     fi
 
     #调试模式
-    if [ ! -z "$1" -a "x$1" = "x-b" ];then
+    if [ ! -z "$1" -a "x$1" = "x-d" ];then
 
         #取得DEBUG路径,并写入配置文件
         DEBUG_PATH=`pwd`
         sed -i "/DEBUG_PATH/ s#=#=$DEBUG_PATH#" ./foree-tools.conf
-        #取得链接的文件,并写入配置文件
-        sed -i "/LINK_LIST/ s#=#="$LINK_LIST"#" ./foree-tools.conf
 
         LINK_PATH=$DEBUG_PATH
 
@@ -89,6 +87,9 @@ function main()
         LINK_PATH=$TOOLS_CONFIG_DIR
 
     fi
+
+    #取得链接的文件,并写入配置文件
+    sed -i "/LINK_LIST/ s#=#=\"$LINK_LIST\"#" $LINK_PATH/foree-tools.conf
 
     #导出函数列表到环境变量
     _export_function_to_shell
