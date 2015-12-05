@@ -38,3 +38,4 @@ function fadb
             $ADB_PATH $@
     esac
 }
+fadb $@
