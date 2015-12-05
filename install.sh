@@ -59,34 +59,11 @@ function main()
         exit
     fi
 
-    #调试模式
-    if [ ! -z "$1" -a "x$1" = "x-d" ];then
+    #取得DEBUG路径,并写入配置文件
+    DEBUG_PATH=`pwd`
+    sed -i "/DEBUG_PATH/ s#=#=$DEBUG_PATH#" ./foree-tools.conf
 
-        #取得DEBUG路径,并写入配置文件
-        DEBUG_PATH=`pwd`
-        sed -i "/DEBUG_PATH/ s#=#=$DEBUG_PATH#" ./foree-tools.conf
-
-        LINK_PATH=$DEBUG_PATH
-
-    else #用户模式
-
-        #创建程序的配置目录
-        if [ ! -d $TOOLS_CONFIG_DIR ];then
-            mkdir -p $TOOLS_CONFIG_DIR
-        fi
-
-        #初始化相关文件
-        for function_list_file in $FUNCTION_LIST
-        do
-            if [ ! -f $TOOLS_CONFIG_DIR/$function_list_file ];then
-                echo "Installing $function_list_file ......."
-                cp ./$function_list_file $TOOLS_CONFIG_DIR/$function_list_file
-            fi
-        done
-
-        LINK_PATH=$TOOLS_CONFIG_DIR
-
-    fi
+    LINK_PATH=$DEBUG_PATH
 
     #取得链接的文件,并写入配置文件
     sed -i "/LINK_LIST/ s#=#=\"$LINK_LIST\"#" $LINK_PATH/foree-tools.conf

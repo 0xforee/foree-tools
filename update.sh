@@ -17,14 +17,3 @@ if [ "x$1" = "x-a" ];then
 else
     echo "skip update server list"
 fi
-
-if [ "x$2" = "x-u" ];then
-#更新相关文件
-for function_list_file in $FUNCTION_LIST
-do
-    if [ ./$function_list_file -nt $TOOLS_CONFIG_DIR/$function_list_file ];then
-        echo "Updating $function_list_file ..."
-        cp ./$function_list_file $TOOLS_CONFIG_DIR/$function_list_file
-    fi
-done
-fi
