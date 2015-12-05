@@ -54,37 +54,14 @@ function main()
         exit
     fi
 
-    #调试模式
-    if [ ! -z "$1" -a "x$1" = "x-d" ];then
+    #取得DEBUG路径,并擦除配置文件相关配置
+    DEBUG_PATH=`pwd`
+    #擦除配置文件相关配置
+    sed -i "/DEBUG_PATH/ s#=.*#=#" ./foree-tools.conf
 
-        #取得DEBUG路径,并擦除配置文件相关配置
-        DEBUG_PATH=`pwd`
-        #擦除配置文件相关配置
-        sed -i "/DEBUG_PATH/ s#=.*#=#" ./foree-tools.conf
-
-        #擦除配置文件LINK_LIST,user版文件已经删除,因此不需要清理
-        sed -i "/LINK_LIST/ s#=.*#=#" ./foree-tools.conf
-        echo "Already CLeaned =====> var-LINK_LIST"
-
-    else #用户模式
-
-        echo -n "You will clean User configuration(yes/no)?"
-        RSEULT=$(yes_or_no)
-        case $RESULT in
-            n)
-                exit;;
-            yes)
-                ;;
-        esac
-
-        #清理用户配置文件
-        if [ -d $TOOLS_CONFIG_DIR ];then
-            rm $TOOLS_CONFIG_DIR -rf
-        else
-            echo "Already Cleaned =====> $TOOLS_CONFIG_DIR"
-        fi
-
-    fi
+    #擦除配置文件LINK_LIST,user版文件已经删除,因此不需要清理
+    sed -i "/LINK_LIST/ s#=.*#=#" ./foree-tools.conf
+    echo "Already CLeaned =====> var-LINK_LIST"
 
     #清除函数列表到环境变量
     _delete_export
