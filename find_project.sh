@@ -7,7 +7,9 @@
 #定义变量
 ROJECT_LIST=""
 CURRENT_DIR=`pwd`
-source $CURRENT_DIR/foree-tools.conf
+
+SOFT_DIR=$(dirname $0)
+source $SOFT_DIR/foree-tools.conf
 
 #判断给定的目录是否是project根目录
 function is_project_dir
@@ -30,6 +32,7 @@ function is_project_dir
 #遍历服务器下的目录
 function find_project_dir
 {
+    local whattime=`date +%Y_%m%d_%H%S`
 
     for i in ${!BRINGUP_SERVER_SAMBA_PATH[@]}
     do
@@ -58,7 +61,8 @@ function find_project_dir
                 cd ..
             fi
         done
-        echo -e "$PROJECT_LIST" >$CURRENT_DIR/SERVER_${i}_default
+        echo "# update at $whattime" > $CURRENT_DIR/SERVER_${i}
+        echo -e "$PROJECT_LIST" >>$CURRENT_DIR/SERVER_${i}
     done
     cd $CURRENT_DIR
 
