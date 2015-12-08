@@ -66,7 +66,11 @@ function main()
     LINK_PATH=$DEBUG_PATH
 
     #取得链接的文件,并写入配置文件
-    sed -i "/LINK_LIST/ s#=#=\"$LINK_LIST\"#" $LINK_PATH/foree-tools.conf
+    if [ -z "$LINK_LIST" ];then
+        sed -i "/LINK_LIST/ s#=#=\"$LINK_LIST\"#" $LINK_PATH/foree-tools.conf
+    else
+        echo "LINK_LIST already exits, skip"
+    fi
 
     #导出函数列表到环境变量
     _export_function_to_shell
