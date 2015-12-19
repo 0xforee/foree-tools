@@ -1,4 +1,4 @@
-# update at 2015_1205_2134
+# update at 2015_1219_1141
 dailybuild/M86_flyme5
 dailybuild/M80_bsp
 dailybuild/M71-l1_base
@@ -13,6 +13,5 @@ android/reserved/android-5.0.1_r1
 android/android_6.0
 bringup/zsm
 bringup/M81C-l1_base
-bringup/M88-l1_base_release
 bringup/M88-l1_base
 
