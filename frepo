@@ -13,7 +13,7 @@ function repo_sync
     local DEFAULT_BRANCH
     local TOPDIR=$(_getrepodir)
 
-    if [ -z "$TOPDIR" ];then echo "Not Found Project Here !!";return 1 ;fi
+    if [ -z "$TOPDIR" ];then flog -E "Not Found Project Here !!";return 1 ;fi
 
     cd $TOPDIR
 
@@ -38,7 +38,7 @@ function is_reference()
     if [ -f "$T/$alternate" ];then
         cat "$T/$alternate"
     else
-        echo "No Reference"
+        flog -W "No Reference"
     fi
 }
 

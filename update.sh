@@ -3,6 +3,7 @@
 ### Author: foree
 ### Date: 20151119
 source ./foree-tools.conf
+source ./common.sh
 SOFT_DIR=$(dirname $0)
 
 FUNCTION_LIST=`ls |grep -v "install.sh"| grep -v "update.sh" | grep -v "README.md"`
@@ -16,11 +17,11 @@ if [ "x$1" = "x-a" ];then
     cd $SOFT_DIR
     git pull
     ./find_project.sh
-    if [ "$?" -ne '0' ];then echo "find project error" ;exit 1 ;fi
+    if [ "$?" -ne '0' ];then flog -E "find project error" ;exit 1 ;fi
     cd -
 elif [ "x$1" = "x-u" ];then
     ./find_project.sh
-    if [ "$?" -ne '0' ];then echo "find project error" ;exit 1 ;fi
+    if [ "$?" -ne '0' ];then flog -E "find project error" ;exit 1 ;fi
 else
-    echo "skip update server list"
+    flog -I "skip update server list"
 fi

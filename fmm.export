@@ -10,10 +10,11 @@ mm 2>&1 |tee _push_tmp
 PUSH_FILE=$(grep "^Install" _push_tmp |awk '{print $2}')
 if [ -z "$PUSH_FILE" ];then
     flog -I "Not Found File To Push"
+    flog -D "Not found"
 else
     for i in $PUSH_FILE
     do
-        echo "Pushing $i"
+        flog -I "Pushing $i"
         fadb push $i
     done
 fi

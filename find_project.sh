@@ -10,6 +10,8 @@ CURRENT_DIR=`pwd`
 
 SOFT_DIR=$(dirname $0)
 source $SOFT_DIR/foree-tools.conf
+source $SOFT_DIR/common.sh
+flog -D "SOFT_DIR is $SOFT_DIR"
 
 #判断给定的目录是否是project根目录
 function is_project_dir
@@ -19,9 +21,9 @@ function is_project_dir
 
     if [ -d $project_dir/.repo ];then
         if [ ! -z "$2" ];then
-            echo "project dir is $base_dir/$project_dir"
+            flog -I "project dir is $base_dir/$project_dir"
         else
-            echo "project dir is $project_dir"
+            flog -I "project dir is $project_dir"
         fi
         PROJECT_LIST="$PROJECT_LIST$base_dir/$project_dir\n"
     else

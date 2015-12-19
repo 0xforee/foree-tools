@@ -8,7 +8,7 @@ source $SOFT_DIR/common.sh
 #输入关键字可用
 if [ -z "$1" ];then
     echo
-    echo "Usage: fkill <keyword>"
+    flog -W "Usage: fkill <keyword>"
     echo
     exit
 fi
@@ -39,5 +39,5 @@ then
         ;;
 esac
 else
-    echo 'no process found'
+    flog -W 'no process found'
 fi

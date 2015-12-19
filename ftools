@@ -4,18 +4,20 @@
 ### Date:20151205
 
 SOFT_DIR=$(dirname $(realpath $0))
+source $SOFT_DIR/common.sh
+flog -D "SOFT_DIR is $SOFT_DIR"
 
 option=$1
 case $option in
     -C)
-        echo "uninstall foree-tools"
+        flog -I "uninstall foree-tools"
         $SOFT_DIR/uninstall.sh
         ;;
     -u)
-        echo "update foree-tools"
+        flog -I "update foree-tools"
         $SOFT_DIR/update.sh -u
         ;;
     *)
-        echo "Usage: ftools [-C|-u]"
+        flog -W "Usage: ftools [-C|-u]"
         ;;
 esac

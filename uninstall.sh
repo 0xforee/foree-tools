@@ -21,9 +21,9 @@ function _delete_export()
     if [ ! -z "$(cat $SHELL_RC |grep foree-tools)" ];then
         #清除export命令
         sed -i "/add by foree-tools/,/end by foree-tools/d" $SHELL_RC
-        echo "Clean Success =====> $SHELL_RC"
+        flog -I "Clean Success =====> $SHELL_RC"
     else
-        echo "Already Cleaned =====> $SHELL_RC "
+        flog -I "Already Cleaned =====> $SHELL_RC "
     fi
 }
 
@@ -35,11 +35,11 @@ function _clean_link_script()
         do
             if [ -L /usr/local/bin/$i ];then
                 sudo rm /usr/local/bin/$i
-                echo "Cleaning $i =====> /usr/local/bin/$i"
+                flog -I "Cleaning $i =====> /usr/local/bin/$i"
             fi
         done
     else
-        echo "LINK_LIST is null, Please check foree-tools.conf"
+        flog -W "LINK_LIST is null, Please check foree-tools.conf"
     fi
 }
 
@@ -49,7 +49,7 @@ function main()
     if (sudo echo -n);then
         echo -n
     else
-        echo "You must be root Or use \"sudo uninstall.sh\""
+        flog -W "You must be root Or use \"sudo uninstall.sh\""
         exit
     fi
 
@@ -60,7 +60,7 @@ function main()
 
     #擦除配置文件LINK_LIST,user版文件已经删除,因此不需要清理
     sed -i "/LINK_LIST/ s#=.*#=#" ./foree-tools.conf
-    echo "Already CLeaned =====> var-LINK_LIST"
+    flog -I "Already CLeaned =====> var-LINK_LIST"
 
     #清除函数列表到环境变量
     _delete_export

@@ -16,7 +16,7 @@ function fadb
     case "$1" in
         kill)
             if [ -z $2 ];then
-                echo "Usages: fadb kill <keyword>"
+                flog -W "Usages: fadb kill <keyword>"
             else
                 $ADB_PATH shell kill -9 `adb shell ps |grep $2 |awk '{print $2}'`
             fi
@@ -25,13 +25,14 @@ function fadb
             if [ -z $2 ];then
                 flog -W "Usages: fadb push <localfile>"
             else
-                if [ -z $TOPDIR ];then echo "Not Found Project Here !!";return 1 ;fi
+                if [ -z $TOPDIR ];then flog -W "Not Found Project Here !!";return 1 ;fi
                 cd $TOPDIR
                 adb root
                 adb remount
                 localfile=$2
                 localfile=${localfile#*/*/*/*/}
                 remotefile=${localfile%/*}
+                flog -D "Pushing $2 to /$remotefile/"
                 $ADB_PATH push $2 /$remotefile/
             fi
             ;;

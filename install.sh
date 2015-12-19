@@ -59,6 +59,8 @@ function main()
         exit
     fi
 
+    #检查是否安装realpath软件包
+
     #取得DEBUG路径,并写入配置文件
     DEBUG_PATH=`pwd`
     sed -i "/DEBUG_PATH/ s#=#=$DEBUG_PATH#" ./foree-tools.conf

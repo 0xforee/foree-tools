@@ -24,11 +24,11 @@ function do_choice
         LOGIN_IP=${TMP_IPS[$i]}
     else
         if [ $count -eq '0' ];then
-            echo "未指定项目或指定的项目不存在!!!,请在以下项目选择:"
-            server_info
-            if [ -z "$IS_SEARCH_MODE" ];then #查询模式
+            if [ -z "$IS_SEARCH_MODE" ];then #登陆模式
+                flog -E "未指定项目或指定的项目不存在!!!,请在以下项目选择:"
+                server_info
                 count=${#BRINGUP_IPS[@]}
-                echo "which server you want to login ?"
+                flog -I "which server you want to login ?"
                 echo -n "<1...$count>?"
                 read selection
                 #如果选择不为0,且小于等于IP数量,并且选择是个数字,那么就去选择IP
@@ -40,9 +40,13 @@ function do_choice
                         LOGIN_IP=${BRINGUP_IPS[$(($selection-1))]}
                         is_first_login $(($selection-1))
                     else
-                        echo "输入错误,请在1...${count}中选择"
+                        flog -W "输入错误,请在1...${count}中选择"
                     fi
                 fi
+            else
+                echo
+                flog -W "指定的项目不存在"
+                echo
             fi
         else
             while [ $i -lt $count ]
@@ -82,15 +86,6 @@ function server_info
         cat $PROJECT_DIR/${BRINGUP_PROJECT_LIST[$local_i]}|grep -v ^#
     done
 
-    #echo -n "   bringup:"
-    #echo -e "\033[33m M76_flyme5 \033[0m"
-    #echo -n "   dailybuild: "
-    #echo -e "\033[33m M75_base, M76_base, M85_base\033[0m"
-    #echo " 2.IP 172.16.132.38"
-    #echo -n "   bringup:"
-    #echo -e "\033[33m M71_flyme5, MA01C_base \033[0m"
-    #echo -n "   dailybuild:"
-    #echo -e "\033[33m M71C_base, M85-l1_base, M86_base, M86_flyme5, M88_base, MA01_base\033[0m"
 }
 
 function is_first_login
