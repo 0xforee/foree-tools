@@ -4,3 +4,7 @@ function relunch()
 {
     source ~/github/foree-tools/relunch.export
 }
+function fmm()
+{
+    source ~/github/foree-tools/fmm.export
+}
