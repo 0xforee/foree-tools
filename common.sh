@@ -14,7 +14,7 @@ function yes_or_no
             echo 'n'
             ;;
         *)
-            echo "input error,please again"
+            flog -E "input error,please again"
             yes_or_no
             ;;
     esac
@@ -98,7 +98,7 @@ function _gettarget()
 
 #Log函数：
 #1.不同等级log不同颜色标识
-#2.平常运行flogI(无色彩)，提示flogW(黄色)，运行出错flogE(红色)，多余的信息flogD(蓝色)
+#2.平常运行flogI(无色彩)，提示flogW(黄色)，运行出错flogE(红色)，并定位到错误管道，多余的信息flogD(蓝色)
 #3.控制log打开使用
 function flog()
 {
@@ -131,7 +131,7 @@ function flog()
 #将输入的字符加红色
 function _echo_red()
 {
-    echo -e "\033[31m$1\033[0m"
+    echo -e "\033[31m$1\033[0m" >&2
 }
 
 #将输入的字符加天蓝色
