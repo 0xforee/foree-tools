@@ -3,8 +3,16 @@
 ### Author: foree
 ### Date: 20151028
 
+SOFT_DIR=$(dirname $(realpath $0))
+source $SOFT_DIR/common.sh
+
+
 function fadb
 {
+    TOPDIR=$(_gettopdir)
+
+    if [ -z $TOPDIR ];then echo "Not Found Project Here !!";return 1 ;fi
+
     ADB_PATH=/usr/bin/adb
     case "$1" in
         kill)
@@ -18,19 +26,13 @@ function fadb
             if [ -z $2 ];then
                 echo "Usages: fadb push <localfile>"
             else
-                croot 2>&1 >/dev/null
-                if [ $? -eq 0 ];then
-                    adb remount
-                    localfile=$2
-                    localfile=${localfile#*/*/*/*/}
-                    remotefile=${localfile%/*}
-                    $ADB_PATH push $2 /$remotefile/
-                    cd -
-                else
-                    echo " "
-                    echo -e "\033[31m You Must run lunch first!!!\033[0m"
-                    echo " "
-                fi
+                cd $TOPDIR
+                adb root
+                adb remount
+                localfile=$2
+                localfile=${localfile#*/*/*/*/}
+                remotefile=${localfile%/*}
+                $ADB_PATH push $2 /$remotefile/
             fi
             ;;
 
