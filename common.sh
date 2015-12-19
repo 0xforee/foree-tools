@@ -28,6 +28,7 @@ function yes_or_no
     esac
 }
 
+#获取AndroidProject的TOP目录
 function _gettopdir()
 {
 
@@ -49,6 +50,7 @@ function _gettopdir()
     fi
 }
 
+#获取一个Android Project的TOP目录
 function _getrepodir()
 {
 
@@ -70,6 +72,7 @@ function _getrepodir()
     fi
 }
 
+#获取Android Project的PRODUCT_TARGET
 function _gettarget()
 {
     local TOPDIR=$(_gettopdir)
@@ -99,4 +102,60 @@ function _gettarget()
 
     echo $lunch_name
 
+}
+
+#Log函数：
+#1.不同等级log不同颜色标识
+#2.平常运行flogI(无色彩)，提示flogW(黄色)，运行出错flogE(红色)，多余的信息flogD(蓝色)
+#3.控制log打开使用
+function flog()
+{
+    case $1 in
+        -I)
+            #flogI
+            echo "$2"
+            ;;
+        -W)
+            #flogW
+            _echo_yellow "$2"
+            ;;
+        -E)
+            #flogE
+            _echo_red "$2"
+            ;;
+        -D)
+            #flogD
+            if [ "x$DEBUG" = "xtrue" ];then
+                _echo_blue "$2"
+            fi
+            ;;
+        *)
+            ;;
+    esac
+
+
+}
+
+#将输入的字符加红色
+function _echo_red()
+{
+    echo -e "\033[31m$1\033[0m"
+}
+
+#将输入的字符加天蓝色
+function _echo_blue()
+{
+    echo -e "\033[36m$1\033[0m"
+}
+
+#将输入的字符加黄色
+function _echo_yellow()
+{
+    echo -e "\033[33m$1\033[0m"
+}
+
+#将输入的字符加绿色
+function _echo_green()
+{
+    echo -e "\033[32m$1\033[0m"
 }
