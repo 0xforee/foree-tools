@@ -9,7 +9,7 @@ source $SOFT_DIR/common.sh
 mm 2>&1 |tee _push_tmp
 PUSH_FILE=$(grep "^Install" _push_tmp |awk '{print $2}')
 if [ -z "$PUSH_FILE" ];then
-    add_color_for_echo "Not Found File To Push"
+    flog -I "Not Found File To Push"
 else
     for i in $PUSH_FILE
     do

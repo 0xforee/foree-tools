@@ -19,7 +19,7 @@ function do_choice
     local IS_SEARCH_MODE=$1
 
     if [ $count -eq '1' ];then
-        add_color_for_echo " IP: ${TMP_IPS[$i]}
+        flog -W "IP: ${TMP_IPS[$i]}
         LOCATION: ${TMP_LOCATION[$i]}"
         LOGIN_IP=${TMP_IPS[$i]}
     else
@@ -34,7 +34,7 @@ function do_choice
                 #如果选择不为0,且小于等于IP数量,并且选择是个数字,那么就去选择IP
                 if [ -z $selection ];then
                     LOGIN_IP=${BRINGUP_IPS[0]}
-                    add_color_for_echo "IP: $LOGIN_IP"
+                    flog -W "IP: $LOGIN_IP"
                 else
                     if [ $selection -ne '0' -a $selection -le $count ] && [[ $selection =~ [0-9]* ]];then
                         LOGIN_IP=${BRINGUP_IPS[$(($selection-1))]}
@@ -47,7 +47,7 @@ function do_choice
         else
             while [ $i -lt $count ]
             do
-                add_color_for_echo "IP: ${TMP_IPS[$i]}\n LOCATION: ${TMP_LOCATION[$i]}"
+                flog -W "IP: ${TMP_IPS[$i]}\n LOCATION: ${TMP_LOCATION[$i]}"
                 let 'i++'
             done
             if [ -z "$IS_SEARCH_MODE" ];then #查询模式
@@ -109,7 +109,7 @@ function is_first_login
         else
             echo -e "\033[33m If you want to login without input passwd \033[0m"
             echo -e "\033[33m You must generate your rsa key first!! \033[0m"
-            add_color_for_echo "Generate now(y/n)?"
+            flog -I "Generate now(y/n)?"
             yes_or_no
             if [ $? -eq '1' ];then
                 ssh-keygen -t rsa

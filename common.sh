@@ -3,14 +3,6 @@
 ### Author:foree
 ### Date:20151109
 
-#取得当前目录的根目录
-function add_color_for_echo
-{
-    echo -e "\033[33m
-    $1
-    \033[0m"
-}
-
 function yes_or_no
 {
     read input_choice

@@ -22,7 +22,7 @@ function repo_sync
         DEFAULT_BRANCH=$(git br -r | head -n 1 |awk -F "/" '{print $3}' )
         popd
     else
-        add_color_for_echo "default.xml not found !" >&2
+        flog -E "default.xml not found !" >&2
         return 1
     fi
     whattime=`date +%Y_%m%d_%H%M`
@@ -49,7 +49,7 @@ function repo_init()
         repo init --reference=~/android/MZ-l1_base_mirror -u ssh://liming1@review.rnd.meizu.com:29999/platform/manifest -b "$3"
     else
         echo
-        add_color_for_echo "Usage: frepo init -b branch_name"
+        flog -W "Usage: frepo init -b branch_name"
         echo
     fi
 
@@ -77,7 +77,7 @@ function main()
         esac
     else
         echo
-        add_color_for_echo "Usage: frepo [init|sync|reference]"
+        flog -W "Usage: frepo [init|sync|reference]"
         echo
     fi
 }

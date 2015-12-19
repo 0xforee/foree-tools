@@ -11,7 +11,6 @@ function fadb
 {
     TOPDIR=$(_gettopdir)
 
-    if [ -z $TOPDIR ];then echo "Not Found Project Here !!";return 1 ;fi
 
     ADB_PATH=/usr/bin/adb
     case "$1" in
@@ -24,8 +23,9 @@ function fadb
             ;;
         push)
             if [ -z $2 ];then
-                echo "Usages: fadb push <localfile>"
+                flog -W "Usages: fadb push <localfile>"
             else
+                if [ -z $TOPDIR ];then echo "Not Found Project Here !!";return 1 ;fi
                 cd $TOPDIR
                 adb root
                 adb remount
