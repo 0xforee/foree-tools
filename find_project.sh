@@ -6,7 +6,6 @@
 
 #定义变量
 ROJECT_LIST=""
-CURRENT_DIR=`pwd`
 
 SOFT_DIR=$(dirname $0)
 source $SOFT_DIR/foree-tools.conf
@@ -63,10 +62,10 @@ function find_project_dir
                 cd ..
             fi
         done
-        echo "# update at $whattime" > $CURRENT_DIR/SERVER_${i}
-        echo -e "$PROJECT_LIST" >>$CURRENT_DIR/SERVER_${i}
+        echo "# update at $whattime" > $SOFT_DIR/SERVER_${i}
+        echo -e "$PROJECT_LIST" >>$SOFT_DIR/SERVER_${i}
     done
-    cd $CURRENT_DIR
+    cd $SOFT_DIR
 
 }
 find_project_dir
