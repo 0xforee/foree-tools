@@ -14,8 +14,12 @@ case $option in
         $SOFT_DIR/uninstall.sh
         ;;
     -u)
-        flog -I "update foree-tools"
+        flog -I "update server project list"
         $SOFT_DIR/update.sh -u
+        ;;
+    -a)
+        flog -I "update foree-tools and server project list"
+        $SOFT_DIR/update.sh -a
         ;;
     -r)
         cd $SOFT_DIR
