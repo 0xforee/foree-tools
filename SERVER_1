@@ -1,8 +1,10 @@
-# update at 2015_1219_1141
+# update at 2015_1226_1619
 dailybuild/M86_flyme5
 dailybuild/M80_bsp
 dailybuild/M71-l1_base
 dailybuild/M85-l1_base
+dailybuild/M88-l1_base
+SOURCE/M98-l1_base_bringup_version
 SOURCE/M80_base_first
 SOURCE/M81_base
 SOURCE/M80_base
@@ -11,7 +13,6 @@ SOURCE/MZ-l1_base_mirror
 android/reserved/patchrom
 android/reserved/android-5.0.1_r1
 android/android_6.0
-bringup/zsm
-bringup/M81C-l1_base
-bringup/M88-l1_base
+bringup/ZHOU/M98-l1_bsp
+bringup/ZHOU/M98-l1_base
 
