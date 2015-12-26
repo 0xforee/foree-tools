@@ -3,11 +3,12 @@
 ### Author: foree
 ### Date: 20151218
 
+PUSH_TMP=.push_tmp
 SOFT_DIR=$(dirname $(realpath $0))
 source $SOFT_DIR/common.sh
 
-mm 2>&1 |tee _push_tmp
-PUSH_FILE=$(grep "^Install" _push_tmp |awk '{print $2}')
+mm $@ 2>&1 |tee $PUSH_TMP
+PUSH_FILE=$(grep "^Install" $PUSH_TMP |awk '{print $2}')
 if [ -z "$PUSH_FILE" ];then
     flog -I "Not Found File To Push"
     flog -D "Not found"
@@ -18,4 +19,4 @@ else
         fadb push $i
     done
 fi
-rm _push_tmp
+rm $PUSH_TMP
