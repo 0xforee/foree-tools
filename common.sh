@@ -3,6 +3,12 @@
 ### Author:foree
 ### Date:20151109
 
+#一些约定的名称
+#product 类似 meizu_m86
+#variant 类似 eng
+#device 类似 m86
+#lunch = product+variant 类似 meizu_m86-eng
+
 function yes_or_no
 {
     read input_choice
@@ -77,7 +83,7 @@ function _getoutdir()
 }
 
 #获取目标机型的product名称
-function _gettarget()
+function _get_lunch_name()
 {
     local TOPDIR=$(_gettopdir)
 
@@ -112,7 +118,7 @@ function _gettarget()
 #获取Android Project的PRODUCT_TARGET
 function _getproduct()
 {
-    lunch_name=$(_gettarget)
+    lunch_name=$(_get_lunch_name)
 
     product=$( echo -n $lunch_name |sed "s#[a-z]*_\(.*\)-[a-z]*#\1#" )
     echo $product

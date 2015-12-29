@@ -9,7 +9,7 @@ source $SOFT_DIR/common.sh
 HERE=`pwd`
 TOPDIR=$(_gettopdir)
 
-lunch_name=$(_gettarget)
+lunch_name=$(_get_lunch_name)
 
 cd $TOPDIR
 source build/envsetup.sh
