@@ -4,10 +4,11 @@
 ### Date:20151109
 
 #一些约定的名称
-#product 类似 meizu_m86
+#product = vendor_device 类似 meizu_m86
 #variant 类似 eng
 #device 类似 m86
-#lunch = product+variant 类似 meizu_m86-eng
+#vendor 类似 meizu
+#lunch = product-variant 类似 meizu_m86-eng
 
 function yes_or_no
 {
@@ -26,7 +27,7 @@ function yes_or_no
     esac
 }
 
-#获取AndroidProject的TOP目录
+#获取一个可能不带repo的Android Project的TOP目录
 function _gettopdir()
 {
 
@@ -48,23 +49,15 @@ function _gettopdir()
     fi
 }
 
-#获取一个Android Project的TOP目录
+#获取一个带repo的Android Project的TOP目录
 function _getrepodir()
 {
 
     local REPODIRFILE=.repo/manifests/default.xml
-    TOPDIR=
-    HERE=`pwd`
-    if [ ! -f $REPODIRFILE ];then
-        while [ ! -f $REPODIRFILE -a "$PWD" != "/" ]; do
-            \cd ..
-            TOPDIR=`pwd -P`
-        done
-    else
-        TOPDIR=`pwd -P`
-    fi
+    TOPDIR=$(_gettopdir)
 
-    cd $HERE
+    if [ -z $TOPDIR ];then flog -w "Not Fount Project Here !!"; return 1; fi
+
     if [ -f $TOPDIR/$REPODIRFILE ];then
         echo $TOPDIR
     fi
@@ -77,7 +70,7 @@ function _getoutdir()
 
     if [ -z $TOPDIR ];then flog -w "Not Found Project Here !!";return 1 ;fi
 
-    local TARGET=$(_getproduct)
+    local TARGET=$(_get_device_name)
 
     echo "out/target/product/$TARGET"
 }
@@ -115,14 +108,14 @@ function _get_lunch_name()
 
 }
 
-#获取Android Project的PRODUCT_TARGET
-function _getproduct()
+#获取Android Project的DEVICE
+function _get_device_name()
 {
     lunch_name=$(_get_lunch_name)
 
-    product=$( echo -n $lunch_name |sed "s#[a-z]*_\(.*\)-[a-z]*#\1#" )
-    echo $product
+    device_name=$( echo -n $lunch_name |sed "s#[a-z]*_\(.*\)-[a-z]*#\1#" )
 
+    echo $device_name
 }
 
 #Log函数：
