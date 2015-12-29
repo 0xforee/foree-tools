@@ -1,0 +1,53 @@
+#!/bin/bash
+### Description:根据机型以及目标地址（bringup服务器，jenkins服务器）以及机型版本user,userdebug自动打开flash_tool.sh，并加载地址
+### Author:foree
+### Date:20151228
+
+SOFT_DIR=$(dirname $(realpath $0))
+source $SOFT_DIR/common.sh
+source $SOFT_DIR/foree-tools.conf
+
+
+#1.中文字符需要转换编码
+#2.lastDir字段用来显示上一次加载过的内容
+#3.recentScanter用来显示上一次Scatter.txt的地址
+#4.target地址选择，使用_gettarget来获取
+#5.目标机型地址使用SERVER_*来获取samba机型对应地址
+function _get_bringup_server_path()
+{
+    server_path=()
+    project_number=()
+
+    for server_i in ${!BRINGUP_PROJECT_LIST[@]}
+    do
+        search_result=( $(grep -i "\/M86_f" ${BRINGUP_PROJECT_LIST[$server_i]} |grep -v ^#|tr -t '\n' ' '))
+        server_path=( ${server_path[@]} ${search_result[@]} )
+
+        #将每个服务器的搜索结果数量存起来
+        project_number=( ${project_number[@]} ${#search_result[@]} )
+
+    done
+    #输出数组全部内容
+    flog -d "server_path 数组内容 = ${server_path[@]}"
+    flog -d "server_path 数组个数 = ${#server_path[@]}"
+    flog -d "project_number 数组内容 = ${project_number[@]}"
+
+    #遍历数组
+    i=0
+    for project_number_i in ${!project_number[@]}
+    do
+        flog -d "project_number_i= $project_number_i"
+        tmp=$((i + ${project_number[$project_number_i]}))
+        for(( i ; i < $tmp; i = i + 1 ))
+        do
+            echo "目标地址为：${BRINGUP_SERVER_SAMBA_PATH[$project_number_i]}/${server_path[$i]}"
+            flog -d "i= $i"
+            flog -d "project_number[$project_number_i] = ${project_number[$project_number_i]}"
+        done
+    done
+
+}
+#6.根据机型选择刷机工具,80-1544，其他1520
+#中文url编码
+#echo '国内版' | tr -d '\n' | xxd -plain |sed 's/\(..\)/\\x\1/g'
+_get_bringup_server_path
