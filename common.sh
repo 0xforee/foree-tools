@@ -64,24 +64,36 @@ function _getrepodir()
     fi
 }
 
-#获取Android Project的PRODUCT_TARGET
+#获取目标机型的out目录
+function _getoutdir()
+{
+    local TOPDIR=$(_gettopdir)
+
+    if [ -z $TOPDIR ];then flog -w "Not Found Project Here !!";return 1 ;fi
+
+    local TARGET=$(_getproduct)
+
+    echo "out/target/product/$TARGET"
+}
+
+#获取目标机型的product名称
 function _gettarget()
 {
     local TOPDIR=$(_gettopdir)
 
-    if [ -z $TOPDIR ];then echo "Not Found Project Here !!";return 1 ;fi
+    if [ -z $TOPDIR ];then flog -w "Not Found Project Here !!";return 1 ;fi
 
     if [ -d $TOPDIR/out/target/product ];then
         cd $TOPDIR/out/target/product
     else
-        add_color_for_echo "You Must be run lunch manually first !!" >&2
+        flog -w "You Must be run lunch manually first !!" >&2
         return 1
     fi
 
     previous_path=$(find . -maxdepth 2 -name "previous_build_config.mk" |xargs ls -t1 | grep -v "generic")
     previous_number=$( echo "$previous_path" |wc -l )
     if [ $previous_number -eq '0' ];then
-        echo "previous_build_config.mk not found, You Must be run lunch manually first !!"
+        flog -w "previous_build_config.mk not found, You Must be run lunch manually first !!"
         cd $HERE
         return 1
     elif [ $previous_number -gt '1' ];then
@@ -90,9 +102,20 @@ function _gettarget()
 
     product_name=${previous_path#*/}
     product_name=${product_name%/*}
+
     lunch_name=$( grep $previous_path -e "[a-z]*_$product_name-[a-z]*" -o)
 
     echo $lunch_name
+
+}
+
+#获取Android Project的PRODUCT_TARGET
+function _getproduct()
+{
+    lunch_name=$(_gettarget)
+
+    product=$( echo -n $lunch_name |sed "s#[a-z]*_\(.*\)-[a-z]*#\1#" )
+    echo $product
 
 }
 
@@ -136,23 +159,23 @@ function flog()
 
 }
 
-#将输入的字符加红色
+#将输入的字符加红色flog -e
 function _echo_red()
 {
     echo -e "\033[31m$@\033[0m" >&2
 }
 
-#将输入的字符加天蓝色
+#将输入的字符加天蓝色flog -d
 function _echo_blue()
 {
 
-    echo -e "\033[36m$@\033[0m"
+    echo -e "\033[36m$@\033[0m" >&2
 }
 
-#将输入的字符加黄色
+#将输入的字符加黄色flog -w
 function _echo_yellow()
 {
-    echo -e "\033[33m$@\033[0m"
+    echo -e "\033[33m$@\033[0m" >&2
 }
 
 #将输入的字符加绿色

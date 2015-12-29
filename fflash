@@ -7,20 +7,84 @@ SOFT_DIR=$(dirname $(realpath $0))
 source $SOFT_DIR/common.sh
 source $SOFT_DIR/foree-tools.conf
 
+FLASH_TOOL_PATH=~/Software/SP_Flash_Tool_exe_Linux_v5.1520.00.100/
 
 #1.中文字符需要转换编码
 #2.lastDir字段用来显示上一次加载过的内容
+function _write_lastDir()
+{
+    flog -d "_write_lastDir"
+}
 #3.recentScanter用来显示上一次Scatter.txt的地址
+function _write_recentScatter()
+{
+    flog -d "_write_recentScatter"
+    scatter_path=$(_getScatter $1)
+    flog -d "$scatter_path"
+
+    if [ -f $FLASH_TOOL_PATH/history.ini ];then
+        rm $FLASH_TOOL_PATH/history.ini
+    fi
+
+    cat > $FLASH_TOOL_PATH/history.ini <<EOF
+[RecentOpenFile]
+scatterHistory=$scatter_path
+EOF
+
+}
 #4.target地址选择，使用_gettarget来获取
-#5.目标机型地址使用SERVER_*来获取samba机型对应地址
+function _getScatter()
+{
+    target_path=$(do_choice_for_target $1)
+    cd $target_path
+    outdir=$(_getoutdir)
+    flog -d "outdir = $outdir"
+    scatter=$(find $outdir -maxdepth 1 -name "*.txt" |grep "Android_scatter")
+    if [ -z "$scatter" ];then
+        flog -w "scatter file not fount"
+        kill $$
+    else
+        flog -d "scatter = $scatter"
+        scatter_path="$target_path/$scatter"
+        flog -d "scatter_path = $scatter_path"
+        flog -i "$scatter_path"
+    fi
+    cd - >/dev/null
+}
+
+function do_choice_for_target()
+{
+    target_i=
+
+    ALL_TARGET=( $(_get_bringup_server_path $1) )
+    flog -d "ALL_TAGET = ${ALL_TARGET[@]}"
+    for target_i in ${!ALL_TARGET[@]}
+    do
+        flog -w "${target_i}. ${ALL_TARGET[$target_i]}"
+    done
+    flog -w "You want <1..${target_i}>:"
+
+    read choise
+
+    if [ $choise -gt ${#ALL_TARGET[@]} ];then
+        exit 1;
+    else
+        flog -d "path = ${ALL_TARGET[$choise]}"
+        flog -i "${ALL_TARGET[$choise]}"
+    fi
+
+}
+
+#5.获取目标机型在bringup服务器的全路径
 function _get_bringup_server_path()
 {
+    search_target=$1
     server_path=()
     project_number=()
 
     for server_i in ${!BRINGUP_PROJECT_LIST[@]}
     do
-        search_result=( $(grep -i "\/M86_f" ${BRINGUP_PROJECT_LIST[$server_i]} |grep -v ^#|tr -t '\n' ' '))
+        search_result=( $(grep -i "\/$search_target" ${BRINGUP_PROJECT_LIST[$server_i]} |grep -v ^#|tr -t '\n' ' '))
         server_path=( ${server_path[@]} ${search_result[@]} )
 
         #将每个服务器的搜索结果数量存起来
@@ -40,7 +104,7 @@ function _get_bringup_server_path()
         tmp=$((i + ${project_number[$project_number_i]}))
         for(( i ; i < $tmp; i = i + 1 ))
         do
-            echo "目标地址为：${BRINGUP_SERVER_SAMBA_PATH[$project_number_i]}/${server_path[$i]}"
+            echo "${BRINGUP_SERVER_SAMBA_PATH[$project_number_i]}/${server_path[$i]}"
             flog -d "i= $i"
             flog -d "project_number[$project_number_i] = ${project_number[$project_number_i]}"
         done
@@ -50,4 +114,12 @@ function _get_bringup_server_path()
 #6.根据机型选择刷机工具,80-1544，其他1520
 #中文url编码
 #echo '国内版' | tr -d '\n' | xxd -plain |sed 's/\(..\)/\\x\1/g'
-_get_bringup_server_path
+function _fflash()
+{
+    #_getScatter $1
+    _write_recentScatter $1
+    cd $FLASH_TOOL_PATH
+    sudo ./flash_tool.sh
+   # _start_flasht_tools
+}
+_fflash $@
