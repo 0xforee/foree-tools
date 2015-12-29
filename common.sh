@@ -103,22 +103,30 @@ function _gettarget()
 function flog()
 {
     case $1 in
-        -I)
+        -I|-i)
             #flogI
-            echo "$2"
+            #shift用于去除-i这个参数
+            shift
+            echo "$@"
             ;;
-        -W)
+        -W|-w)
             #flogW
-            _echo_yellow "$2"
+            #shift用于去除-w这个参数
+            shift
+            _echo_yellow "$@"
             ;;
-        -E)
+        -E|-e)
             #flogE
-            _echo_red "$2"
+                #shift用于去除-e这个参数
+                shift
+            _echo_red "$@"
             ;;
-        -D)
+        -D|-d)
             #flogD
             if [ "x$DEBUG" = "xtrue" ];then
-                _echo_blue "$2"
+                #shift用于去除-d这个参数
+                shift
+                _echo_blue "$@"
             fi
             ;;
         *)
@@ -131,23 +139,24 @@ function flog()
 #将输入的字符加红色
 function _echo_red()
 {
-    echo -e "\033[31m$1\033[0m" >&2
+    echo -e "\033[31m$@\033[0m" >&2
 }
 
 #将输入的字符加天蓝色
 function _echo_blue()
 {
-    echo -e "\033[36m$1\033[0m"
+
+    echo -e "\033[36m$@\033[0m"
 }
 
 #将输入的字符加黄色
 function _echo_yellow()
 {
-    echo -e "\033[33m$1\033[0m"
+    echo -e "\033[33m$@\033[0m"
 }
 
 #将输入的字符加绿色
 function _echo_green()
 {
-    echo -e "\033[32m$1\033[0m"
+    echo -e "\033[32m$@\033[0m"
 }
