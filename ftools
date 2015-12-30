@@ -30,7 +30,8 @@ case $option in
         flog -W "Usage: ftools [-C|-u|-r]"
         echo ""
         echo "  -C Uninstall foree-tools"
-        echo "  -u Update foree-tools"
+        echo "  -u Update server project list"
+        echo "  -a Update foree-tools and server project list"
         echo "  -r Resolve project"
         echo ""
         ;;
