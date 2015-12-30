@@ -28,9 +28,15 @@ function do_choice
                 flog -E "未指定项目或指定的项目不存在!!!,请在以下项目选择:"
                 server_info
                 count=${#BRINGUP_IPS[@]}
-                flog -I "which server you want to login ?"
-                echo -n "<1...$count>?"
-                read selection
+                if [ $count -eq '1' ];then
+                    selection=1
+                    flog -w "IP: ${BRINGUP_IPS[@]}"
+                    flog -I
+                else
+                    flog -I "which server you want to login ?"
+                    echo -n "<1...$count>?"
+                    read selection
+                fi
                 #如果选择不为0,且小于等于IP数量,并且选择是个数字,那么就去选择IP
                 if [ -z $selection ];then
                     LOGIN_IP=${BRINGUP_IPS[0]}

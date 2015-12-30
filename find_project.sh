@@ -62,8 +62,13 @@ function find_project_dir
                 cd ..
             fi
         done
-        echo "# update at $whattime" > $SOFT_DIR/SERVER_${i}
-        echo -e "$PROJECT_LIST" >>$SOFT_DIR/SERVER_${i}
+
+        #SERVER_* 文件需要重新生成，避免IP列表只有一个时另一个文件存在会干扰
+        flog -d "删除SERVER_*"
+        rm $SOFT_DIR/SERVER_* >/dev/null
+
+        echo "# update at $whattime" > $SOFT_DIR/${BRINGUP_PROJECT_LIST[$i]}
+        echo -e "$PROJECT_LIST" >>$SOFT_DIR/${BRINGUP_PROJECT_LIST[$i]}
     done
     cd $SOFT_DIR
 
