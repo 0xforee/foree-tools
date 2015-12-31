@@ -35,6 +35,10 @@ function find_project_dir
 {
     local whattime=`date +%Y_%m%d_%H%S`
 
+    #SERVER_* 文件需要重新生成，避免IP列表只有一个时另一个文件存在会干扰
+    flog -d "删除SERVER_*"
+    rm $SOFT_DIR/SERVER_* >/dev/null
+
     for i in ${!BRINGUP_SERVER_SAMBA_PATH[@]}
     do
         PROJECT_LIST=""
@@ -63,9 +67,7 @@ function find_project_dir
             fi
         done
 
-        #SERVER_* 文件需要重新生成，避免IP列表只有一个时另一个文件存在会干扰
-        flog -d "删除SERVER_*"
-        rm $SOFT_DIR/SERVER_* >/dev/null
+        flog -d "${BRINGUP_PROJECT_LIST[$i]}"
 
         echo "# update at $whattime" > $SOFT_DIR/${BRINGUP_PROJECT_LIST[$i]}
         echo -e "$PROJECT_LIST" >>$SOFT_DIR/${BRINGUP_PROJECT_LIST[$i]}
