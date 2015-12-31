@@ -54,13 +54,22 @@ function _getrepodir()
 {
 
     local REPODIRFILE=.repo/manifests/default.xml
-    TOPDIR=$(_gettopdir)
+    TOPDIR=
+    HERE=`pwd`
+    if [ ! -f $REPODIRFILE ];then
+        while [ ! -f $REPODIRFILE -a "$PWD" != "/" ]; do
+            \cd ..
+            TOPDIR=`pwd -P`
+        done
+    else
+        TOPDIR=`pwd -P`
+    fi
 
-    if [ -z $TOPDIR ];then flog -w "Not Fount Project Here !!"; return 1; fi
-
+    cd $HERE
     if [ -f $TOPDIR/$REPODIRFILE ];then
         echo $TOPDIR
     fi
+
 }
 
 #获取目标机型的out目录
