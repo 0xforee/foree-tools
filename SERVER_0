@@ -1,4 +1,4 @@
-# update at 2015_1230_1059
+# update at 2016_0102_1650
 android/android-5.1.1_r1
 android/android-5.1.0_r3
 android/android-5.0.1_r1
@@ -15,6 +15,7 @@ dailybuild/M81C-l1_base
 dailybuild/M71C-l1_base
 bugfix/M86_flyme5_keliang
 bugfix/M86_flyme5
+bringup/M88_base
 bringup/M91_bsp
 bringup/M91-l1_base
 

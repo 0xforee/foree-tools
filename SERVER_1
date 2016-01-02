@@ -1,7 +1,8 @@
-# update at 2015_1230_1059
+# update at 2016_0102_1650
 dailybuild/M86_flyme5
 dailybuild/M80_bsp
 dailybuild/M71-l1_base
+dailybuild/xrom_l1_m86
 dailybuild/M85-l1_base
 dailybuild/M88-l1_base
 SOURCE/M98-l1_base_bringup_version
