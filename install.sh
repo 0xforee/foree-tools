@@ -4,6 +4,7 @@
 ### Date: 20151025
 
 source ./foree-tools.conf
+source ./common.sh
 
 #FUNCTION_LIST="common.sh fastboot_flash.sh pick_branch.sh ssh_bringup.sh fadb_funtion fkill foree-tools.conf SERVER_0 SERVER_1"
 FUNCTION_LIST=`ls |grep -v "install.sh"| grep -v "update.sh" | grep -v "README.md"`
@@ -35,6 +36,20 @@ source $DEBUG_PATH/export_to_shell
 EOF
         echo "Add to $SHELL_RC success"
     fi
+}
+
+#根据README.md输出帮助文档
+function _output_help()
+{
+    echo
+    flog -w "帮助文档"
+    echo
+
+    sed -f ./sed_command README.md > _foree_tools_help
+
+    source _foree_tools_help
+
+    rm _foree_tools_help
 }
 
 #链接可执行文件
@@ -79,6 +94,9 @@ function main()
 
     #链接可执行文件
     _link_script
+
+    #输出帮助文档
+    _output_help
 
 }
 main $@
