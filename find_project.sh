@@ -19,12 +19,14 @@ function is_project_dir
     base_dir=$2
 
     if [ -d $project_dir/.repo ];then
-        if [ ! -z "$2" ];then
-            flog -I "project dir is $base_dir/$project_dir"
-        else
-            flog -I "project dir is $project_dir"
+        if [ -f $project_dir/build/core/envsetup.mk ];then
+            if [ ! -z "$2" ];then
+                flog -I "project dir is $base_dir/$project_dir"
+            else
+                flog -I "project dir is $project_dir"
+            fi
+            PROJECT_LIST="$PROJECT_LIST$base_dir/$project_dir\n"
         fi
-        PROJECT_LIST="$PROJECT_LIST$base_dir/$project_dir\n"
     else
         return 2
     fi
