@@ -127,6 +127,16 @@ function _get_device_name()
     echo $device_name
 }
 
+#获取Android Project的vendor
+function _get_vendor_name()
+{
+    lunch_name=$(_get_lunch_name)
+
+    vendor_name=$(echo -n $lunch_name |sed "s#\(.*\)_[a-z0-9]*-[a-z]*#\1#")
+
+    echo $vendor_name
+}
+
 #Log函数：
 #1.不同等级log不同颜色标识
 #2.平常运行flogI(无色彩)，提示flogW(黄色)，运行出错flogE(红色)，并定位到错误管道，多余的信息flogD(蓝色)

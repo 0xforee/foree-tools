@@ -8,3 +8,7 @@ function fmm()
 {
     source ~/github/foree-tools/fmm.export
 }
+function cdevice()
+{
+    source ~/github/foree-tools/cdevice.export
+}
