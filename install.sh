@@ -8,7 +8,7 @@ source ./common.sh
 
 #FUNCTION_LIST="common.sh fastboot_flash.sh pick_branch.sh ssh_bringup.sh fadb_funtion fkill foree-tools.conf SERVER_0 SERVER_1"
 FUNCTION_LIST=`ls |grep -v "install.sh"| grep -v "update.sh" | grep -v "README.md"`
-LINK_LIST="bringup_ssh fadb fkill frepo ftools"
+LINK_LIST="bringup_ssh fadb fkill frepo ftools flash_fastboot"
 LINK_PATH=
 
 #导出函数列表到指定文件

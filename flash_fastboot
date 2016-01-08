@@ -1,0 +1,108 @@
+#!/bin/bash
+### Description:不同机型使用不同的fastboot方式
+### Author:foree
+### Date:20151206
+
+SOFT_DIR=$(dirname $(realpath $0))
+
+function _get_device_name()
+{
+    local DEVICE_NAME
+
+    DEVICE_NAME=$(adb shell getprop |grep device |awk -F ":" '{print $2}' |grep -o "[a-z]*")
+    #86
+    if [ "$DEVICE_NAME" = "niux" ];then
+        echo "m86"
+    #76
+    elif [ "$DEVICE_NAME" = "m76" ];then
+        echo "m76"
+    else
+        flog -e "Not found device name, Please check your phone!"
+        echo ""
+    fi
+}
+
+function _get_vendor_name()
+{
+    local VENDOR
+
+    VENDOR=$(adb shell getprop |grep ro.soc.vendor |grep -o "[A-Z]*")
+
+}
+
+function yes_or_no
+{
+    read i
+    case $i in
+        yes|y|Y|Yes) 
+            ;;
+        no|n|N|No) exit 1
+            ;;
+    esac
+}
+
+function fastboot_mode 
+{
+    local DEVICE_NAME
+    local IMAGE_PATH
+
+    DEVICE_NAME=$1
+    IMAGE_PATH=$2
+
+    echo -n "fastboot ready?(y/n)?"
+    yes_or_no
+    fastboot devices
+    if [ $? -eq 0 ];then
+        if [ "$DEVICE_NAME" = "m86" ];then
+            fastboot flash bootloader $IMAGE_PATH/bootloader
+            fastboot flash ldfw $IMAGE_PATH/ldfw
+            fastboot flash dtb $IMAGE_PATH/dtb
+            fastboot flash bootimg $IMAGE_PATH/boot.img
+            fastboot flash system $IMAGE_PATH/system.img
+            fastboot -w
+            fastboot reboot
+        fi
+    else
+        echo "Not in fastboot,please check your devices."
+        fastboot_mode
+    fi
+}
+
+function _adb_mode()
+{
+    local VENDOR_NAME
+    local DEVICE_NAME
+    local IMAGE_PATH
+
+    if [ -z "$1" ];then
+        echo "Usage: fastboot_flash IMAGE_PATH"
+        exit 1
+    fi
+
+    IMAGE_PATH=$1
+
+    adb devices
+    DEVICE_NAME=$(_get_device_name)
+    VENDOR_NAME=$(_get_vendor_name)
+    if [ -z "$VENDOR_NAME" ];then flog -e "VENDOR_NAME: $VENDOR_NAME"; exit 1;fi
+    if [ -z "$DEVICE_NAME" ];then flog -e "DEVICE_NAME: $DEVICE_NAME"; exit 1;fi
+
+    echo -n "ready to go?(y/n)"
+    yes_or_no
+
+    if [ -n "$VENDOR_NAME" ];then
+        #MTK
+        if [ "$VENDOR_NAME" = "MTK" ];then
+            adb reboot bootloader
+        #SAMSUNG
+        elif [ "$VENDOR_NAME" = "SAMSUNG" ];then
+            adb reboot fastboot
+        #Default
+        else
+            adb reboot fastboot
+        fi
+    fi
+
+    fastboot_mode $DEVICE_NAME $IMAGE_PATH
+}
+_adb_mode $@
