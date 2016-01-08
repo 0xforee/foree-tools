@@ -26,7 +26,8 @@ function repo_sync
         return 1
     fi
     whattime=`date +%Y_%m%d_%H%M`
-    repo sync -c -d
+    flog -w "Runing -> repo sync -c -d -f"
+    repo sync -c -d -f -j16
     repo start ${DEFAULT_BRANCH}_${whattime} --all
 }
 
