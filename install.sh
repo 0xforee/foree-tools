@@ -75,6 +75,12 @@ function main()
     fi
 
     #检查是否安装realpath软件包
+    realpath
+    if [ $? -ne '0' ];then
+        flog -e "realpath not install!!"
+        exit 1
+    fi
+    #检查
 
     #取得DEBUG路径,并写入配置文件
     DEBUG_PATH=`pwd`
