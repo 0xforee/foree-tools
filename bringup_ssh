@@ -1,6 +1,7 @@
 #!/bin/bash
 TMP_IPS=()
 TMP_LOCATION=()
+SEARCH_MODE=
 
 SOFT_DIR=$(dirname $(realpath $0))
 source $SOFT_DIR/foree-tools.conf
@@ -10,77 +11,77 @@ PROJECT_DIR=$SOFT_DIR
 PROJECT_CONF=$SOFT_DIR/foree-tools.conf
 #source $PROJECT_CONF
 
+function bringup_ssh
+{
+    local LOGIN_IP=
+    local count=
+    local i=0
+
+    for result_i in "${!TMP_LOCATION[@]}"
+    do
+        if [ -n "${TMP_LOCATION[$result_i]}" ];then
+            flog -D "$FUNCNAME: result = ${TMP_LOCATION[$result_i]}"
+            flog -D "$FUNCNAME: ip = ${BRINGUP_IPS[$result_i]}"
+            echo
+            flog -W "IP: ${BRINGUP_IPS[$result_i]}"
+            echo
+            flog -W "LOCATION: ${TMP_LOCATION[$result_i]}"
+            TMP_IPS[$((i++))]=${BRINGUP_IPS[$result_i]}
+        fi
+    done
+
+    #搜索模式，只做打印
+    if [ "$SEARCH_MODE" = "true" ];then
+        exit 0
+    fi
+
+    count=${#TMP_IPS[@]}
+
+    # 未找到，全部打印选择
+    if [ $count -eq '0' ];then
+        echo "not fount"
+        server_info
+        # 传递数组名称
+        LOGIN_IP=$(do_choice ${BRINGUP_IPS[*]})
+    # 唯一
+    elif [ $count -eq '1' ];then
+        flog -D "LOGINIP: ${TMP_IPS[0]}"
+        LOGIN_IP=${TMP_IPS[0]}
+    # 找到多个结果，打印选择
+    else
+        LOGIN_IP=$(do_choice ${TMP_IPS[*]})
+    fi
+        
+    ssh bringup@$LOGIN_IP
+    
+}
+
+# 传递IP数组名称,然后做对应的选择
 function do_choice
 {
-    local LOGIN_IP
-    local i=0
-    local selection
-    local count=${#TMP_IPS[@]}
-    local IS_SEARCH_MODE=$1
+    local LOGIN_IP=
+    local ARRAY_IPS=( $@ )
 
-    if [ $count -eq '1' ];then
-        flog -W "IP: ${TMP_IPS[$i]}
-        LOCATION: ${TMP_LOCATION[$i]}"
-        LOGIN_IP=${TMP_IPS[$i]}
+    count=${#ARRAY_IPS[@]}
+
+    flog -W "which server you want to login ?"
+    flog -W "<1...$count>?"
+    read selection
+
+    if [ -z $selection ];then
+        LOGIN_IP=${ARRAY_IPS[0]}
     else
-        if [ $count -eq '0' ];then
-            if [ -z "$IS_SEARCH_MODE" ];then #登陆模式
-                flog -E "未指定项目或指定的项目不存在!!!,请在以下项目选择:"
-                server_info
-                count=${#BRINGUP_IPS[@]}
-                if [ $count -eq '1' ];then
-                    selection=1
-                    flog -w "IP: ${BRINGUP_IPS[@]}"
-                    flog -I
-                else
-                    flog -I "which server you want to login ?"
-                    echo -n "<1...$count>?"
-                    read selection
-                fi
-                #如果选择不为0,且小于等于IP数量,并且选择是个数字,那么就去选择IP
-                if [ -z $selection ];then
-                    LOGIN_IP=${BRINGUP_IPS[0]}
-                    flog -W "IP: $LOGIN_IP"
-                else
-                    if [ $selection -ne '0' -a $selection -le $count ] && [[ $selection =~ [0-9]* ]];then
-                        LOGIN_IP=${BRINGUP_IPS[$(($selection-1))]}
-                        is_first_login $(($selection-1))
-                    else
-                        flog -W "输入错误,请在1...${count}中选择"
-                    fi
-                fi
-            else
-                echo
-                flog -W "指定的项目不存在"
-                echo
-            fi
+        #如果选择不为0,且小于等于数组大小,并且选择是个数字,那么就去选择IP
+        if [ $selection -ne '0' -a $selection -le $count ] && [[ $selection =~ [0-9]* ]];then
+            LOGIN_IP=${ARRAY_IPS[$(($selection-1))]}
+    #        is_first_login $(($selection-1))
         else
-            while [ $i -lt $count ]
-            do
-                flog -W "IP: ${TMP_IPS[$i]}\n LOCATION: ${TMP_LOCATION[$i]}"
-                let 'i++'
-            done
-            if [ -z "$IS_SEARCH_MODE" ];then #查询模式
-                echo "which server you want to login ?"
-                echo -n "<1...$count>?"
-                read selection
-                case $selection in
-                    [0-9]*)
-                        LOGIN_IP=${TMP_IPS[$(($selection-1))]}
-                        is_first_login $(($selection-1))
-                        ;;
-                    *)
-                        LOGIN_IP=${BRINGUP_IPS[0]}
-                        is_first_login 0
-                        ;;
-                esac
-            fi
+            flog -W "输入错误,请在1...${count}中选择"
         fi
     fi
 
-    if [ -z "$IS_SEARCH_MODE" ];then
-        ssh bringup@$LOGIN_IP
-    fi
+    echo $LOGIN_IP
+
 }
 
 function server_info
@@ -120,39 +121,83 @@ function is_first_login
     fi
 }
 
-function bringup_ssh
+function _search_branch
 {
-    HERE=`pwd`
-    TMP_IPS=()
-    TMP_LOCATION=()
-    SEARCH_MODE=
-    cd $PROJECT_DIR
     local i=0
-    local tmp_i=0
-    if [ ! -z "$1" ];then
-        #如果是查询模式
-        if [ "x$1" = "x-s" -a -n "$2" ];then
-            SEARCH_MODE=true
-            LOAD_PROJECT=$2
-        else
-            LOAD_PROJECT=$1
-        fi
+    local HERE=`pwd`
+    local SEARCH_BRANCH=$1
 
-        SERVER_LIST=$( ls SERVER_* )
-        for SERVER in $SERVER_LIST
-        do
-            search_result=$( grep -i "\/$LOAD_PROJECT" $SERVER |grep -v ^# )
-            if [ ! -z "$search_result" ];then
-                TMP_LOCATION[$tmp_i]="$search_result"
-                TMP_IPS[$tmp_i]="${BRINGUP_IPS[$i]}"
-                let 'tmp_i++'
-            fi
-            let 'i++'
-        done
-    fi
+    cd $PROJECT_DIR
+
+    SERVER_LIST=$( ls SERVER_* )
+    for SERVER in $SERVER_LIST
+    do
+        #在server_list中搜索关键字，不区分大小写，且支持#注释
+        search_result=$( grep -i "\/$SEARCH_BRANCH" $SERVER |grep -v ^# )
+        TMP_LOCATION[$((i++))]="$search_result"
+    done
 
     cd $HERE
 
-    do_choice $SEARCH_MODE
+    flog -D result = ${TMP_LOCATION[0]}
+    flog -D result2 = ${TMP_LOCATION[2]}
+
+    bringup_ssh
+
 }
-bringup_ssh $@
+
+function usage
+{
+    echo "Usage: `basename $0` [ KEYWORD ] [ -s KEYWORD ]"
+    exit 1
+}
+
+function main
+{
+    ARGS=`getopt -o :s:h --long search:,help -- "$@"`
+
+    # 参数输入错误时的提示
+    if [ $? != 0 ];then
+        usage
+        exit 1
+    fi
+
+    eval set -- "${ARGS}"
+
+    while true
+    do
+        case "$1" in
+            -s|--search)
+                #search mode
+                SEARCH_MODE=true
+                SEARCH_BRANCH=$2
+                shift 2
+                ;;
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            --)
+                shift
+                break
+                ;;
+        esac
+    done
+
+    if [ -n "$SEARCH_BRANCH" -a $# -ne '0' ];then
+        usage
+    else
+        #解析命令行其他参数
+        for arg in $@
+        do
+            echo "processing $arg"
+            SEARCH_BRANCH=$arg
+        done
+    fi
+
+    _search_branch $SEARCH_BRANCH
+
+}
+
+#bringup_ssh $@
+main $@
