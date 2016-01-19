@@ -137,6 +137,77 @@ function _get_vendor_name()
     echo $vendor_name
 }
 
+#使用shell内置getopts函数解析命令行参数的示例程序
+function getopts_help
+{
+    while getopts ":s:h" args
+    do
+        case $args in
+            s)
+                echo "option is -s, argument is $OPTARG"
+                ;;
+            h)
+                usage
+                ;;
+            ?)
+                usage
+                ;;
+        esac
+    done
+
+    shift $(($OPTIND - 1))
+
+    #solve other argument
+    for arg in $@
+    do
+        echo "processing $arg"
+    done
+
+}
+
+#使用外部程序getopt命令解析命令行参数的示例程序
+function getopt_help
+{
+    # 使用getopt解析参数
+    # s前边的:表示错误自己处理
+    # -o 后边加短参数, --long 后边加长参数
+    ARGS=`getopt -o :s:h --long search:,help -- "$@"`
+
+    # 参数输入错误时的提示
+    if [ $? != 0 ];then
+        usage
+        exit 1
+    fi
+
+    # 将规范化的命令行参数分配到位置参数{$1..$n}
+    eval set -- "${ARGS}"
+
+    while true
+    do
+        case "$1" in
+            -s|--search)
+                echo "Option s, argument $2"
+                shift 2
+                ;;
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            --)
+                shift
+                break
+                ;;
+        esac
+    done
+
+    #解析命令行其他参数
+    for arg in $@
+    do
+        echo "processing $arg"
+    done
+
+}
+
 #Log函数：
 #1.不同等级log不同颜色标识
 #2.平常运行flogI(无色彩)，提示flogW(黄色)，运行出错flogE(红色)，并定位到错误管道，多余的信息flogD(蓝色)
